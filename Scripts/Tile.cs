@@ -15,15 +15,10 @@ public class Tile : Node2D
     {
         //Set up the random number generator
         RandomNumberGenerator rng = new RandomNumberGenerator();
-        rng.Seed = 
-
+        //Randomize the random number generators seed
+        rng.Randomize();
+        //Generate a tile based on the mount of entries in the enum, so the enum size can change as log as custom numbering is not used
+        type = (TileType)rng.RandiRange(1, Enum.GetNames(typeof(TileType)).Length);
+        
     }
-
-
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
