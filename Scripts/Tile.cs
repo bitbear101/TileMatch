@@ -1,6 +1,8 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using EventCallback;
+
 //The types of tiles
 public enum TileType
 {
@@ -12,6 +14,8 @@ public class Tile : Node2D
 {
     //The sprite for the tile
     Sprite sprite;
+    //A dictionary for the sprites for the tiles
+    Dictionary<TileType, PackedScene> tileSprites = new Dictionary<TileType, PackedScene>();
     //The type of the tile
     TileType type;
     //When the tile type is changed we call the tile type change event
@@ -36,8 +40,11 @@ public class Tile : Node2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        //Assign the sprite to the sprite object on the object
-        sprite = GetNode<Sprite>("Sprite");
+        //Set up the tile sprites
+        tileSprites.Add(TileType.BLUE, (ResourceLoader.Load("res://Scenes/TileSprites/BlueTile.tscn") as PackedScene));
+        tileSprites.Add(TileType.GREEN, (ResourceLoader.Load("res://Scenes/TileSprites/GreenTile.tscn") as PackedScene));
+        tileSprites.Add(TileType.RED, (ResourceLoader.Load("res://Scenes/TileSprites/RedTile.tscn") as PackedScene));
+
         //Generate the tiles type
         GenerateTile();
         GD.Print("Tiles type: " + Type);
