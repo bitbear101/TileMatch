@@ -8,10 +8,15 @@ public enum TileType
 {
     RED,
     BLUE,
-    GREEN
+    GREEN,
+    PURPLE
 };
 public class Tile : Node2D
 {
+    // [Export]
+    // List<PackedScene> myTiles = new List<PackedScene>();
+    // [Export]
+    // Dictionary<Sprite, PackedScene> tiles= new Dictionary<Sprite, PackedScene>();
     //The sprite for the tile
     Sprite sprite;
     //A dictionary for the sprites for the tiles
@@ -44,10 +49,10 @@ public class Tile : Node2D
         tileSprites.Add(TileType.BLUE, (ResourceLoader.Load("res://Scenes/TileSprites/BlueTile.tscn") as PackedScene));
         tileSprites.Add(TileType.GREEN, (ResourceLoader.Load("res://Scenes/TileSprites/GreenTile.tscn") as PackedScene));
         tileSprites.Add(TileType.RED, (ResourceLoader.Load("res://Scenes/TileSprites/RedTile.tscn") as PackedScene));
+        tileSprites.Add(TileType.PURPLE, (ResourceLoader.Load("res://Scenes/TileSprites/PurpleTile.tscn") as PackedScene));
 
         //Generate the tiles type
         GenerateTile();
-        GD.Print("Tiles type: " + Type);
     }
 
     private void GenerateTile()
@@ -58,5 +63,40 @@ public class Tile : Node2D
         rng.Randomize();
         //Generate a tile based on the mount of entries in the enum, so the enum size can change as log as custom numbering is not used
         Type = (TileType)rng.RandiRange(0, Enum.GetNames(typeof(TileType)).Length - 1);
+
+        //If the type for the tile is in the dictionary
+        if (tileSprites.ContainsKey(Type))
+        {
+            //Set the sprite object to the instanced object ffrom the dictionary
+            sprite = tileSprites[Type].Instance() as Sprite;
+            AddChild(sprite);
+        }
+        else
+        {
+            GD.Print("Tile - No such tile type exists in dictionary, can not instantiate sprite for tile");
+        }
+    }
+
+    public void OnInteractionAreaInputEvent(Viewport viewport, Godot.InputEvent @event, int shape_idx)
+    {
+        //GD.Print("Tile - OnInteractionAreaInputEvent: Running");
+        if (@event is InputEventScreenDrag screenDrag)
+        {
+            //Convert the movement vector to a positive number to check if thier is movememnt
+            Vector2 moveCheck = new Vector2(Mathf.Abs(screenDrag.Relative.x), Mathf.Abs(screenDrag.Relative.y));
+            //If the drag movement is greater than one we move the camera so we don't make micro udjustments every time we acidentally touch the screen
+            if (moveCheck > Vector2.One)
+            {
+                GD.Print("Tile - OnInteractionAreaInputEvent: Screen was dragged");
+            }
+        }
+
+        if (@event is InputEventScreenTouch screenTouch)
+        {
+            if (screenTouch.Pressed)
+            {
+                GD.Print("Tile - OnInteractionAreaInputEvent: Screen was touched or clicked");
+            }
+        }
     }
 }
