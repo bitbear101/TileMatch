@@ -52,31 +52,35 @@ public class BoardManager : Node2D
         switch (state)
         {
             case BoardState.FILLBOARD:
-            GD.Print("BoardManager - _Process: Running State FILLBOARD");
+                GD.Print("BoardManager - _Process: Running State FILLBOARD");
                 //Run when the board is created the first time and whenever we want to reset the board
                 FillBoard();
+
+                //Remove tile for testing
+                RemoveTileAt(new Vector2(4, 4));
+
                 //Afte the fill board state has benn run we switch to the wait state until usr iput changes the board status
                 ChangeState(BoardState.CHECKVOIDS);
                 break;
 
             case BoardState.WAIT:
-            GD.Print("BoardManager - _Process: Running State WAIT");
+                //GD.Print("BoardManager - _Process: Running State WAIT");
                 break;
 
             case BoardState.CHECKVOIDS:
-            GD.Print("BoardManager - _Process: Running State CHECKVOIDS");
+                GD.Print("BoardManager - _Process: Running State CHECKVOIDS");
                 //Check for voids (empty spaces) in the board
                 CheckForEmptySlots();
                 break;
 
             case BoardState.MOVETILES:
-            GD.Print("BoardManager - _Process: Running State MOVETILES");
+                GD.Print("BoardManager - _Process: Running State MOVETILES");
                 //Move the tiles down
                 DropTile();
                 break;
 
             case BoardState.CLEARBOARD:
-            GD.Print("BoardManager - _Process: Running State CLEARBOARD");
+                GD.Print("BoardManager - _Process: Running State CLEARBOARD");
                 //Clears the board of tiles
                 ClearBoard();
                 //After clearing the board the wait state is run waiting for user input or something I hope
@@ -146,20 +150,32 @@ public class BoardManager : Node2D
             {
                 //If the slot on the board is empty
                 if (boardTiles[x, y] == null)
+
                     //If the empty slot is not in thte top row
                     if (y != 0)
                     {
-                        //Loop through all the empty slot position
-                        for (int i = 0; i < emptySlotPos.Count; i++)
+                        //If the emptySlotPos has an entry
+                        if (emptySlotPos.Count > 0)
                         {
-                            //If the empty slot is not in the same column as any of the others in the list 
-                            if (emptySlotPos[i].x != x)
+                            //Loop through all the empty slot position
+                            for (int i = 0; i < emptySlotPos.Count; i++)
                             {
-                                //There is an empty slot in the board we set it to true
-                                emptySlots = true;
-                                //We add hte empty slots position to the list
-                                emptySlotPos.Add(new Vector2(x, y));
+                                //If the empty slot is not in the same column as any of the others in the list 
+                                if (emptySlotPos[i].x != x)
+                                {
+                                    //There is an empty slot in the board we set it to true
+                                    emptySlots = true;
+                                    //We add hte empty slots position to the list
+                                    emptySlotPos.Add(new Vector2(x, y));
+                                }
                             }
+                        }
+                        else
+                        {
+                            //There is an empty slot in the board we set it to true
+                            emptySlots = true;
+                            //We add hte empty slots position to the list
+                            emptySlotPos.Add(new Vector2(x, y));
                         }
                     }
                     else
@@ -183,7 +199,7 @@ public class BoardManager : Node2D
             ChangeState(BoardState.WAIT);
             GD.Print("BoardManager - CheckForEmptySlots: No void tiles found state changed to WAIT state");
         }
-GD.Print("BoardManager - CheckForEmptySlots: Done");
+        GD.Print("BoardManager - CheckForEmptySlots: Done");
     }
 
     public void DropTile()
@@ -192,21 +208,22 @@ GD.Print("BoardManager - CheckForEmptySlots: Done");
         //Loop through all the empty slot positions
         for (int i = 0; i < emptySlotPos.Count; i++)
         {
-            //Loop through the whole column of slots from bottom to top
-            for (int y = (int)emptySlotPos[i].y; y > 0; y++)
+            //Loop through the whole column of slots from the top of the empty slot to the top of the board
+            for (int y = (int)emptySlotPos[i].y; y > 0; y--)
             {
-                //If hte slot we are trying to fill is not the top most slot
-                if (y != 0)
+                //If the slot we are trying to fill is the top most slot
+                if (y == 0)
                 {
+                    //If the slot is the top most slot we set it to null
+                    boardTiles[(int)emptySlotPos[y].x, y] = null;
+                }
+                else
+                {
+                    GD.Print("BoardManager - DropTile: y != 0");
                     //Set the empty slot to the tile above in the boards array
                     boardTiles[(int)emptySlotPos[y].x, y] = boardTiles[(int)emptySlotPos[y].x, y - 1];
                     //Set the tiles position in the world
                     boardTiles[(int)emptySlotPos[y].x, y - 1].Position = new Vector2(emptySlotPos[y].x, y * 32);
-                }
-                else
-                {
-                    //If the slot is the top most slot we set it to null
-                    boardTiles[(int)emptySlotPos[y].x, y] = null;
                 }
             }
         }
