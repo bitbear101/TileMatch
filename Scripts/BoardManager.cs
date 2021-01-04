@@ -59,6 +59,12 @@ public class BoardManager : Node2D
                 //Remove tile for testing
                 RemoveTileAt(new Vector2(4, 4));
 
+                //Remove tile for testing
+                RemoveTileAt(new Vector2(8, 8));
+
+                //Remove tile for testing
+                RemoveTileAt(new Vector2(1, 1));
+
                 //Afte the fill board state has benn run we switch to the wait state until usr iput changes the board status
                 ChangeState(BoardState.CHECKVOIDS);
                 break;
@@ -141,16 +147,21 @@ public class BoardManager : Node2D
         GD.Print("BoardManager - CheckForEmptySlots: Running");
         //If any void tiles are found set it to true
         bool emptySlots = false;
+        //Clear the empty tile lists
+        emptySlotPos.Clear();
+        emptyTopRowSlotPos.Clear();
         //Find open position and call tile move function on the tile above it
-        //Loop through the board
-        for (int x = 0; x < boardWidth; x++)
+
+        //Loop through the board from bottom to top to add the bottom most empty slots into the array first so they drop first 
+        for (int y = boardHeight - 1; y > -1; y--)
         {
-            //Loop through the board from bottom to top to add the bottom most empty slots into the array first so they drop first 
-            for (int y = boardHeight - 1; y > 0; y--)
+            //Loop through the board
+            for (int x = 0; x < boardWidth; x++)
             {
                 //If the slot on the board is empty
                 if (boardTiles[x, y] == null)
-
+                {
+                    GD.Print("BoardManager - CheckForEmptySlots: x, y = " + x + ", " + y);
                     //If the empty slot is not in thte top row
                     if (y != 0)
                     {
@@ -185,6 +196,7 @@ public class BoardManager : Node2D
                         //Add the top row empty slot to the empty top row list
                         emptyTopRowSlotPos.Add(new Vector2(x, y));
                     }
+                }
             }
         }
         //If there where tile positions with no tiles in we go to the move tiles state else we go to the wait state
@@ -192,12 +204,14 @@ public class BoardManager : Node2D
         {
             //Set the boards state to move tile after collecting all the open spaces
             ChangeState(BoardState.MOVETILES);
+            GD.Print("BoardManager - CheckForEmptySlots: Change board State to MOVETILES");
+
         }
         else
         {
             //Set the boards state to move tile after collecting all the open spaces
             ChangeState(BoardState.WAIT);
-            GD.Print("BoardManager - CheckForEmptySlots: No void tiles found state changed to WAIT state");
+            GD.Print("BoardManager - CheckForEmptySlots: Change board State to WAIT");
         }
         GD.Print("BoardManager - CheckForEmptySlots: Done");
     }
@@ -205,34 +219,38 @@ public class BoardManager : Node2D
     public void DropTile()
     {
         GD.Print("BoardManager - DropTile: Running");
-        //Loop through all the empty slot positions
-        for (int i = 0; i < emptySlotPos.Count; i++)
+        if (emptySlotPos.Count > 0)
         {
-            //Loop through the whole column of slots from the top of the empty slot to the top of the board
-            for (int y = (int)emptySlotPos[i].y; y > 0; y--)
+            //Loop through all the empty slot positions
+            for (int i = 0; i < emptySlotPos.Count; i++)
             {
-                //If the slot we are trying to fill is the top most slot
-                if (y == 0)
+                //Loop through the whole column of slots from the top of the empty slot to the top of the board
+                for (int y = (int)emptySlotPos[i].y; y > 0; y--)
                 {
-                    //If the slot is the top most slot we set it to null
-                    boardTiles[(int)emptySlotPos[y].x, y] = null;
-                }
-                else
-                {
-                    GD.Print("BoardManager - DropTile: y != 0");
-                    //Set the empty slot to the tile above in the boards array
-                    boardTiles[(int)emptySlotPos[y].x, y] = boardTiles[(int)emptySlotPos[y].x, y - 1];
+                    //Set the empty slot to the slot aboves tile
+                    boardTiles[(int)emptySlotPos[i].x, y] = boardTiles[(int)emptySlotPos[i].x, y - 1];
                     //Set the tiles position in the world
-                    boardTiles[(int)emptySlotPos[y].x, y - 1].Position = new Vector2(emptySlotPos[y].x, y * 32);
+                    boardTiles[(int)emptySlotPos[i].x, y - 1].Position = new Vector2(emptySlotPos[i].x * 32, y * 32);
+                    //Set the tiles it just copieds slot to null
+                    boardTiles[(int)emptySlotPos[i].x, y - 1] = null;
                 }
             }
         }
 
-        //Interate through the top row of the board and spawn new tiles in
-        for (int j = 0; j < emptyTopRowSlotPos.Count; j++)
+        if (emptyTopRowSlotPos.Count > 0)
         {
-            GD.Print("BoardManager - DropTile: Top row slot open");
+            //Interate through the top row of the board and spawn new tiles in
+            for (int j = 0; j < emptyTopRowSlotPos.Count; j++)
+            {
+                //Instantiate the tilscene and set the boards node to the scene instanced
+                boardTiles[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y] = ((Node2D)tileScene.Instance());
+                //Set the position of the tile on the board representation in the viewport
+                boardTiles[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y].Position = new Vector2((int)emptyTopRowSlotPos[j].x * 32, (int)emptyTopRowSlotPos[j].y * 32);
+                //Add the tile as a child to the board scene
+                AddChild(boardTiles[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y]);
+            }
         }
+
         /*
         1. Get the whole column of tiles above the empty tile
         2. Intereate through the column and move them doward
