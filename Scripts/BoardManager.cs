@@ -63,10 +63,10 @@ public class BoardManager : Node2D
                 RemoveTileAt(new Vector2(8, 8));
 
                 //Remove tile for testing
-                RemoveTileAt(new Vector2(1, 1));
+                //RemoveTileAt(new Vector2(1, 1));
 
                 //Afte the fill board state has benn run we switch to the wait state until usr iput changes the board status
-                ChangeState(BoardState.CHECKVOIDS);
+                ChangeState(BoardState.WAIT);
                 break;
 
             case BoardState.WAIT:
