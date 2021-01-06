@@ -9,7 +9,7 @@ public class Main : Node2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        boardScene = ResourceLoader.Load("res://Scenes/Board.tscn") as PackedScene;
+        boardScene = ResourceLoader.Load("res://Scenes/BoardManager.tscn") as PackedScene;
         board = (Node2D)boardScene.Instance();
         board.Position = new Vector2(500, 300);
         AddChild(board);

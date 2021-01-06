@@ -277,7 +277,6 @@ public class BoardManager : Node2D
         ChangeState(BoardState.CHECKVOIDS);
         GD.Print("BoardManager - DropTile: Done");
     }
-
     private void CheckTileMatches()
     {
         //The open list for the tiles that need to be checked
@@ -329,6 +328,7 @@ public class BoardManager : Node2D
                 //Instantiate the tilscene and set the boards node 
                 boardTiles[x, y] = ((Node2D)tileScene.Instance());
                 boardTiles[x, y].Position = new Vector2(x * 32, y * 32);
+                //GD.Print("BoardManager - FillBoard: boardTiles[x, y].Position = " + boardTiles[x, y].Position);
                 AddChild(boardTiles[x, y]);
             }
         }

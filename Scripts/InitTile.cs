@@ -15,7 +15,7 @@ public enum TileType
 };
 public class InitTile : Node
 {
-   Sprite sprite;
+    Sprite sprite;
     //A dictionary for the sprites for the tiles
     Dictionary<TileType, PackedScene> tileSprites = new Dictionary<TileType, PackedScene>();
     //The type of the tile
@@ -32,16 +32,7 @@ public class InitTile : Node
         tileSprites.Add(TileType.GRAY, (ResourceLoader.Load("res://Scenes/TileSprites/GrayTile.tscn") as PackedScene));
         tileSprites.Add(TileType.YELLOW, (ResourceLoader.Load("res://Scenes/TileSprites/YellowTile.tscn") as PackedScene));
 
-        TileStateChangeEvent.RegisterListener(OnTileStateChangeEvent);
-    }
-
-        private void OnTileStateChangeEvent(TileStateChangeEvent tscei)
-    {
-        //If the tiles state has been changed and it is move tile we set active to true else it is false
-        if (tscei.newState == TileState.INIT)
-        {
-            GenerateTile();
-        }
+        GenerateTile();
     }
 
     private void GenerateTile()
