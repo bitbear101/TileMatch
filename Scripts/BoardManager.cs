@@ -26,7 +26,7 @@ public enum BoardState
 public class BoardManager : Node2D
 {
     //The boards width and height
-    const int boardWidth = 9, boardHeight = 12;
+    const int boardWidth = 9, boardHeight = 9;
     //Create the for the board
     Node2D[,] board = new Node2D[boardWidth, boardHeight];
     //The tile that needs to be dropped

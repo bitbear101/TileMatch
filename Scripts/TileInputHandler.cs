@@ -24,9 +24,9 @@ public class TileInputHandler : Node
             if (screenTouch.Pressed)
             {
                 //Temp destroy tile 
-                //TileDestroyedEvent tdei = new TileDestroyedEvent();
-                //tdei.tileID = GetParent().GetInstanceId();
-                //tdei.FireEvent();
+                // TileDestroyedEvent tdei = new TileDestroyedEvent();
+                // tdei.tileID = GetParent().GetInstanceId();
+                // tdei.FireEvent();
                 //Code to run on a click or tap event
                 GD.Print("Tile - OnInteractionAreaInputEvent: Screen was touched or clicked");
             }

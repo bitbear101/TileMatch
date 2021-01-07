@@ -11,7 +11,7 @@ namespace EventCallback
         //The size of the board in tiles
         public Vector2 boardSize;
         //The position of the tile to check
-        public Node2D tile;
+        public Vector2 tilePos;
     }
 }
 
