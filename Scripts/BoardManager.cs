@@ -31,36 +31,48 @@ public class BoardManager : Node2D
     Node2D[,] boardTiles = new Node2D[boardWidth, boardHeight];
     //The tile that needs to be dropped
     List<Node2D> columnToDrop = new List<Node2D>();
-    //The list of empty positions on the board
-    List<Vector2> emptySlotPos = new List<Vector2>();
-    //If any of the top row slots are empty we add them to this list as new tiles need to spawned
-    List<Vector2> emptyTopRowSlotPos = new List<Vector2>();
-    //The scene for the tile object
-    PackedScene tileScene;
+
+
     //The state fore the board
     BoardState state;
+    //A custom setter and getter for the state to send a message to all listeners when it is changed
+    public BoardState State
+    {
+        get { return state; }
+        set
+        {
+            //Set the new value of state
+            state = value;
+            //When the state is changed call the new state function
+            NewState();
+        }
+    }
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        //Get the tile scene
-        tileScene = ResourceLoader.Load("res://Scenes/Tile.tscn") as PackedScene;
         //Set the state of the board to fill it
         ChangeState(BoardState.FILLBOARD);
     }
-    public override void _Process(float delta)
+    private void NewState()
     {
         switch (state)
         {
             case BoardState.FILLBOARD:
                 GD.Print("BoardManager - _Process: Running State FILLBOARD");
-                //Run when the board is created the first time and whenever we want to reset the board
-                FillBoard();
+                //Send a message to the FillBoardEvent
+                FillBoardEvent fbei = new FillBoardEvent();
+                //Get a refference to the board
+                fbei.board = boardTiles;
+                //Send the board size as a Vector2
+                fbei.boardSize = new Vector2(boardWidth, boardHeight);
+                //Send the event to the listeners
+                fbei.FireEvent();
 
                 //Remove tile for testing
-                RemoveTileAt(new Vector2(4, 4));
+                //RemoveTileAt(new Vector2(4, 4));
 
                 //Remove tile for testing
-                RemoveTileAt(new Vector2(8, 8));
+                //RemoveTileAt(new Vector2(8, 8));
 
                 //Remove tile for testing
                 //RemoveTileAt(new Vector2(1, 1));
@@ -70,25 +82,25 @@ public class BoardManager : Node2D
                 break;
 
             case BoardState.WAIT:
-                //GD.Print("BoardManager - _Process: Running State WAIT");
+                GD.Print("BoardManager - _Process: Running State WAIT");
                 break;
 
             case BoardState.CHECKVOIDS:
                 GD.Print("BoardManager - _Process: Running State CHECKVOIDS");
                 //Check for voids (empty spaces) in the board
-                CheckForEmptySlots();
+                //CheckForEmptySlots();
                 break;
 
             case BoardState.MOVETILES:
                 GD.Print("BoardManager - _Process: Running State MOVETILES");
                 //Move the tiles down
-                DropTile();
+                //DropTile();
                 break;
 
             case BoardState.CLEARBOARD:
                 GD.Print("BoardManager - _Process: Running State CLEARBOARD");
                 //Clears the board of tiles
-                ClearBoard();
+                //ClearBoard();
                 //After clearing the board the wait state is run waiting for user input or something I hope
                 ChangeState(BoardState.WAIT);
                 break;
@@ -108,236 +120,10 @@ public class BoardManager : Node2D
         //Set the position in the list for the tile to null
         boardTiles[(int)pos.x, (int)pos.y] = null;
     }
-
-    // //Check for matching neighbouring tiles
-    // public List<Node2D> CheckMatchingNeighbours(Node2D tile)
-    // {
-    //     //Checking tile matches seperately on the x and then the y axis makes sure we only check
-    //     //for vertical and horizontal matches only
-    //     //Check all the x position tiles first
-    //     for (int x = (int)tile.Position.x - 1; x < (int)tile.Position.x + 1; x++)
-    //     {
-    //         //Make sure the tile is not checking against itself by making sure the position is not the same
-    //         if(tile.Position != x)
-    //         {
-    //             //Get the script on the node object and then grab the tile types from that for a comparison
-    //             if(((Tile)tile).type == ((Tile)GetTile(new Vector2(x,y))).type)
-    //             {
-
-    //             }
-    //         }
-    //     }            
-    //     //Check all the y position tiles 
-    //     for (int y = (int)tile.Position.y - 1; y < (int)tile.Position.y + 1; y++)
-    //     {
-    //         if(tile.Position.y != y)
-    //         {
-    //             //Get the script on the node object and then grab the tile types from that for a comparison
-    //             if(((Tile)tile).type == ((Tile)GetTile(new Vector2(x,y))).type)
-    //             {
-
-    //             }
-    //         }
-
-    //     }
-    // }
-
-    public void CheckForEmptySlots()
-    {
-        GD.Print("BoardManager - CheckForEmptySlots: Running");
-        //If any void tiles are found set it to true
-        bool emptySlots = false;
-        //Clear the empty tile lists
-        emptySlotPos.Clear();
-        emptyTopRowSlotPos.Clear();
-        //Find open position and call tile move function on the tile above it
-
-        //Loop through the board from bottom to top to add the bottom most empty slots into the array first so they drop first 
-        for (int y = boardHeight - 1; y > -1; y--)
-        {
-            //Loop through the board
-            for (int x = 0; x < boardWidth; x++)
-            {
-                //If the slot on the board is empty
-                if (boardTiles[x, y] == null)
-                {
-                    GD.Print("BoardManager - CheckForEmptySlots: x, y = " + x + ", " + y);
-                    //If the empty slot is not in thte top row
-                    if (y != 0)
-                    {
-                        //If the emptySlotPos has an entry
-                        if (emptySlotPos.Count > 0)
-                        {
-                            //Loop through all the empty slot position
-                            for (int i = 0; i < emptySlotPos.Count; i++)
-                            {
-                                //If the empty slot is not in the same column as any of the others in the list 
-                                if (emptySlotPos[i].x != x)
-                                {
-                                    //There is an empty slot in the board we set it to true
-                                    emptySlots = true;
-                                    //We add hte empty slots position to the list
-                                    emptySlotPos.Add(new Vector2(x, y));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //There is an empty slot in the board we set it to true
-                            emptySlots = true;
-                            //We add hte empty slots position to the list
-                            emptySlotPos.Add(new Vector2(x, y));
-                        }
-                    }
-                    else
-                    {
-                        //There is an empty spot in the board we set it to true
-                        emptySlots = true;
-                        //Add the top row empty slot to the empty top row list
-                        emptyTopRowSlotPos.Add(new Vector2(x, y));
-                    }
-                }
-            }
-        }
-        //If there where tile positions with no tiles in we go to the move tiles state else we go to the wait state
-        if (emptySlots)
-        {
-            //Set the boards state to move tile after collecting all the open spaces
-            ChangeState(BoardState.MOVETILES);
-            GD.Print("BoardManager - CheckForEmptySlots: Change board State to MOVETILES");
-
-        }
-        else
-        {
-            //Set the boards state to move tile after collecting all the open spaces
-            ChangeState(BoardState.WAIT);
-            GD.Print("BoardManager - CheckForEmptySlots: Change board State to WAIT");
-        }
-        GD.Print("BoardManager - CheckForEmptySlots: Done");
-    }
-
-    public void DropTile()
-    {
-        GD.Print("BoardManager - DropTile: Running");
-        if (emptySlotPos.Count > 0)
-        {
-            //Loop through all the empty slot positions
-            for (int i = 0; i < emptySlotPos.Count; i++)
-            {
-                //Loop through the whole column of slots from the top of the empty slot to the top of the board
-                for (int y = (int)emptySlotPos[i].y; y > 0; y--)
-                {
-                    //Set the empty slot to the slot aboves tile
-                    boardTiles[(int)emptySlotPos[i].x, y] = boardTiles[(int)emptySlotPos[i].x, y - 1];
-                    //Set the tiles position in the world
-                    boardTiles[(int)emptySlotPos[i].x, y - 1].Position = new Vector2(emptySlotPos[i].x * 32, y * 32);
-                    //Set the tiles it just copieds slot to null
-                    boardTiles[(int)emptySlotPos[i].x, y - 1] = null;
-                }
-            }
-        }
-
-        if (emptyTopRowSlotPos.Count > 0)
-        {
-            //Interate through the top row of the board and spawn new tiles in
-            for (int j = 0; j < emptyTopRowSlotPos.Count; j++)
-            {
-                //Instantiate the tilscene and set the boards node to the scene instanced
-                boardTiles[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y] = ((Node2D)tileScene.Instance());
-                //Set the position of the tile on the board representation in the viewport
-                boardTiles[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y].Position = new Vector2((int)emptyTopRowSlotPos[j].x * 32, (int)emptyTopRowSlotPos[j].y * 32);
-                //Add the tile as a child to the board scene
-                AddChild(boardTiles[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y]);
-            }
-        }
-
-        /*
-        1. Get the whole column of tiles above the empty tile
-        2. Intereate through the column and move them doward
-        */
-        //Set the tiles new position to be used in the linear interpolate 
-        //Vector2 newTilePosition = new Vector2(tileToDropPos[i].x, tileToDropPos[i].y + 32);
-
-        /* -- THE NICE LOOKING TILE MOVEMENT CAN COME LATER FIRST GET THE TILES GOING TO THE RIGHT PLACES
-        Linearly interpolate between the tiles current position and the tile new position
-        //tilesToDrop[i].Position = tilesToDrop[i].Position.LinearInterpolate(newTilePosition, .5f);
-
-        //If the tile is close enough to the target position
-        if (tilesToDrop[i].Position.DistanceTo(newTilePosition) < .05f)
-        {
-            //We set the tile to its final position
-            tilesToDrop[i].Position = newTilePosition;
-            //Set the tiles new position in the board array
-            boardTiles[(int)newTilePosition.x / 32, (int)newTilePosition.y / 32] = tilesToDrop[i];
-            boardTiles[(int)newTilePosition.x / 32, (int)(newTilePosition.y - 32) / 32] = null;
-        }
-        */
-
-        //Once the tile is in position the state is changed back to the check for voids state
-        ChangeState(BoardState.CHECKVOIDS);
-        GD.Print("BoardManager - DropTile: Done");
-    }
-    private void CheckTileMatches()
-    {
-        //The open list for the tiles that need to be checked
-        List<Node2D> openTileList = new List<Node2D>();
-        //The closed list for tiles that have already been checked
-        List<Node2D> closeTileList = new List<Node2D>();
-
-        //Loop through the board and add all the tile to the open list
-        for (int x = 0; x < boardWidth; x++)
-        {
-            for (int y = 0; y < boardHeight; y++)
-            {
-                openTileList.Add(boardTiles[x, y]);
-            }
-        }
-        //Keep two tile lists, Open and Closed list to keep track of wich tiles have ben check and those that still need to be checked
-        //Run though the open list tiles and check thier neibours for matching tiles, all those that match move and have been checked move them to the closed list
-    }
-    //Called the first time to populate the map
-    private void ResetBoard()
-    {
-        //Clear the map of all tiles
-        ClearBoard();
-        //Refill the board with tiles
-        FillBoard();
-    }
-    private void ClearBoard()
-    {
-        //Loop through the board
-        for (int x = 0; x < boardWidth; x++)
-        {
-            for (int y = 0; y < boardHeight; y++)
-            {
-                //Delete the tile object
-                boardTiles[x, y].QueueFree();
-                //Set the position in the list for the tile to null
-                boardTiles[x, y] = null;
-            }
-        }
-    }
-    private void FillBoard()
-    {
-        GD.Print("BoardManager - FillBoard: Running");
-        //Loop through the board
-        for (int x = 0; x < boardWidth; x++)
-        {
-            for (int y = 0; y < boardHeight; y++)
-            {
-                //Instantiate the tilscene and set the boards node 
-                boardTiles[x, y] = ((Node2D)tileScene.Instance());
-                boardTiles[x, y].Position = new Vector2(x * 32, y * 32);
-                //GD.Print("BoardManager - FillBoard: boardTiles[x, y].Position = " + boardTiles[x, y].Position);
-                AddChild(boardTiles[x, y]);
-            }
-        }
-        GD.Print("BoardManager - FillBoard: Done");
-    }
     public void ChangeState(BoardState newState)
     {
         //Change the current state to the new state
-        state = newState;
+        State = newState;
     }
     private void OnTileDestroyedEvent(TileDestroyedEvent tdei)
     {
