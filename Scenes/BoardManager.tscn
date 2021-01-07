@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/BoardManager.cs" type="Script" id=1]
 [ext_resource path="res://Scripts/FillBoard.cs" type="Script" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://Scripts/CheckTileMatches.cs" type="Script" id=4]
 [ext_resource path="res://Scripts/ClearBoard.cs" type="Script" id=5]
 [ext_resource path="res://Scripts/MoveTile.cs" type="Script" id=6]
+[ext_resource path="res://Scripts/RemoveTiles.cs" type="Script" id=7]
+[ext_resource path="res://Scripts/SwapTiles.cs" type="Script" id=8]
 
 [node name="BoardManager" type="Node2D"]
 script = ExtResource( 1 )
@@ -22,5 +24,11 @@ script = ExtResource( 4 )
 [node name="ClearBoard" type="Node" parent="."]
 script = ExtResource( 5 )
 
-[node name="MoveTile" type="Node" parent="."]
+[node name="MoveTile" type="Node2D" parent="."]
 script = ExtResource( 6 )
+
+[node name="RemoveTiles" type="Node" parent="."]
+script = ExtResource( 7 )
+
+[node name="SwapTiles" type="Node" parent="."]
+script = ExtResource( 8 )

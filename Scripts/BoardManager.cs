@@ -16,23 +16,21 @@ Order of process:
 
 public enum BoardState
 {
-    FILLBOARD,
-    CLEARBOARD,
-    CHECKVOIDS,
-    MOVETILES,
+    FILL_BOARD,
+    CLEAR_BOARD,
+    CHECK_MATCHES,
+    CHECK_VOIDS,
     WAIT
 };
 
 public class BoardManager : Node2D
 {
     //The boards width and height
-    const int boardWidth = 9, boardHeight = 9;
+    const int boardWidth = 9, boardHeight = 12;
     //Create the for the board
-    Node2D[,] boardTiles = new Node2D[boardWidth, boardHeight];
+    Node2D[,] board = new Node2D[boardWidth, boardHeight];
     //The tile that needs to be dropped
     List<Node2D> columnToDrop = new List<Node2D>();
-
-
     //The state fore the board
     BoardState state;
     //A custom setter and getter for the state to send a message to all listeners when it is changed
@@ -50,59 +48,58 @@ public class BoardManager : Node2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        TileDestroyedEvent.RegisterListener(OnTileDestroyedEvent);
+        BoardStateChangeEvent.RegisterListener(OnBoardStateChangeEvent);
         //Set the state of the board to fill it
-        ChangeState(BoardState.FILLBOARD);
+        State = BoardState.FILL_BOARD;
     }
     private void NewState()
     {
         switch (state)
         {
-            case BoardState.FILLBOARD:
+            case BoardState.FILL_BOARD:
                 GD.Print("BoardManager - _Process: Running State FILLBOARD");
                 //Send a message to the FillBoardEvent
                 FillBoardEvent fbei = new FillBoardEvent();
                 //Get a refference to the board
-                fbei.board = boardTiles;
+                fbei.board = board;
                 //Send the board size as a Vector2
                 fbei.boardSize = new Vector2(boardWidth, boardHeight);
                 //Send the event to the listeners
                 fbei.FireEvent();
-
-                //Remove tile for testing
-                RemoveTileAt(new Vector2(4, 4));
-
-                //Remove tile for testing
-                //RemoveTileAt(new Vector2(8, 8));
-
-                //Remove tile for testing
-                //RemoveTileAt(new Vector2(1, 1));
-
                 //Afte the fill board state has benn run we switch to the wait state until usr iput changes the board status
-                ChangeState(BoardState.WAIT);
+                State = BoardState.CHECK_MATCHES;
+                break;
+
+            case BoardState.CHECK_VOIDS:
+                GD.Print("BoardManager - _Process: Running State CHECKVOIDS");
+                //Send a message to the CheckEmptySlotsEvent
+                CheckEmptySlotsEvent cesei = new CheckEmptySlotsEvent();
+                //Get a refference to the board
+                cesei.board = board;
+                //Send the board size as a Vector2
+                cesei.boardSize = new Vector2(boardWidth, boardHeight);
+                //Send the event message
+                cesei.FireEvent();
+                break;
+
+            case BoardState.CHECK_MATCHES:
+            CheckTileMatchesEvent ctmei = new CheckTileMatchesEvent();
+            ctmei.board = board;
                 break;
 
             case BoardState.WAIT:
                 GD.Print("BoardManager - _Process: Running State WAIT");
                 break;
 
-            case BoardState.CHECKVOIDS:
-                GD.Print("BoardManager - _Process: Running State CHECKVOIDS");
-                //Check for voids (empty spaces) in the board
-                //CheckForEmptySlots();
-                break;
 
-            case BoardState.MOVETILES:
-                GD.Print("BoardManager - _Process: Running State MOVETILES");
-                //Move the tiles down
-                //DropTile();
-                break;
 
-            case BoardState.CLEARBOARD:
+            case BoardState.CLEAR_BOARD:
                 GD.Print("BoardManager - _Process: Running State CLEARBOARD");
                 //Clears the board of tiles
                 //ClearBoard();
                 //After clearing the board the wait state is run waiting for user input or something I hope
-                ChangeState(BoardState.WAIT);
+                State = BoardState.WAIT;
                 break;
         }
     }
@@ -111,23 +108,28 @@ public class BoardManager : Node2D
     private Node2D GetTile(Vector2 pos)
     {
         //Return the tile node at the requested position
-        return boardTiles[(int)pos.x, (int)pos.y];
+        return board[(int)pos.x, (int)pos.y];
     }
     public void RemoveTileAt(Vector2 pos)
     {
         //Delete the tile object
-        boardTiles[(int)pos.x, (int)pos.y].QueueFree();
+        board[(int)pos.x, (int)pos.y].QueueFree();
         //Set the position in the list for the tile to null
-        boardTiles[(int)pos.x, (int)pos.y] = null;
+        board[(int)pos.x, (int)pos.y] = null;
     }
-    public void ChangeState(BoardState newState)
+    public void OnBoardStateChangeEvent(BoardStateChangeEvent bscei)
     {
         //Change the current state to the new state
-        State = newState;
+        State = bscei.newState;
     }
     private void OnTileDestroyedEvent(TileDestroyedEvent tdei)
     {
         //When the tile is destroyed update the map
-        GD.InstanceFromId(tdei.tileID);
+        RemoveTileAt(((Node2D)GD.InstanceFromId(tdei.tileID)).Position / 32);
+        //Change board state
+        BoardStateChangeEvent bscei = new BoardStateChangeEvent();
+        bscei.newState = BoardState.CHECK_VOIDS;
+        bscei.FireEvent();
+
     }
 }

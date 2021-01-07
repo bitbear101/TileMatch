@@ -23,6 +23,9 @@ public class InitTile : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+
+        //Regestir the get tile type event 
+        GetTileTypeEvent.RegisterListener(OnGetTileTypeEvent);
         //Set up the tile sprites
         tileSprites.Add(TileType.BLUE, (ResourceLoader.Load("res://Scenes/TileSprites/BlueTile.tscn") as PackedScene));
         tileSprites.Add(TileType.GREEN, (ResourceLoader.Load("res://Scenes/TileSprites/GreenTile.tscn") as PackedScene));
@@ -59,5 +62,14 @@ public class InitTile : Node
         {
             GD.Print("Tile - No such tile type exists in dictionary, can not instantiate sprite for tile");
         }
+    }
+    private void OnGetTileTypeEvent(GetTileTypeEvent gttei)
+    {
+        if (GetParent().GetInstanceId() == gttei.id)
+        {
+            //Return the tile type
+            gttei.type = type;
+        }
+
     }
 }

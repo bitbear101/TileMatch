@@ -1,6 +1,6 @@
 using Godot;
 using System;
-
+using EventCallback;
 public class TileInputHandler : Node
 {
     public void OnInteractionAreaInputEvent(Viewport viewport, Godot.InputEvent @event, int shape_idx)
@@ -23,6 +23,10 @@ public class TileInputHandler : Node
             //If the pressed values is true this code is run
             if (screenTouch.Pressed)
             {
+                //Temp destroy tile 
+                //TileDestroyedEvent tdei = new TileDestroyedEvent();
+                //tdei.tileID = GetParent().GetInstanceId();
+                //tdei.FireEvent();
                 //Code to run on a click or tap event
                 GD.Print("Tile - OnInteractionAreaInputEvent: Screen was touched or clicked");
             }
