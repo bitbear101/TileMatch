@@ -25,8 +25,9 @@ public class FillBoard : Node
                 fbei.board[x, y] = ((Node2D)tileScene.Instance());
                 //Set the tiles position in the world
                 fbei.board[x, y].Position = new Vector2(x * 32, y * 32);
-                //GD.Print("BoardManager - FillBoard: boardTiles[x, y].Position = " + boardTiles[x, y].Position);
-                AddChild(fbei.board[x, y]);
+                //Add the tile child to the board manager hopefully
+                //AddChild(fbei.board[x, y]);
+                GetParent().AddChild(fbei.board[x, y]);
             }
         }
         GD.Print("BoardManager - FillBoard: Done");

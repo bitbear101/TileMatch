@@ -10,17 +10,19 @@ public class MoveTile : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        
+
     }
 
- // Called every frame. 'delta' is the elapsed time since the previous frame.
- public override void _Process(float delta)
- {
-     
- }
-
-public void DropTile()
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(float delta)
     {
+
+    }
+
+    public void DropTile()
+    {
+        /*
+
         GD.Print("BoardManager - DropTile: Running");
         if (emptySlotPos.Count > 0)
         {
@@ -54,14 +56,14 @@ public void DropTile()
             }
         }
 
-        /*
+        
         1. Get the whole column of tiles above the empty tile
         2. Intereate through the column and move them doward
-        */
+        
         //Set the tiles new position to be used in the linear interpolate 
         //Vector2 newTilePosition = new Vector2(tileToDropPos[i].x, tileToDropPos[i].y + 32);
 
-        /* -- THE NICE LOOKING TILE MOVEMENT CAN COME LATER FIRST GET THE TILES GOING TO THE RIGHT PLACES
+        -- THE NICE LOOKING TILE MOVEMENT CAN COME LATER FIRST GET THE TILES GOING TO THE RIGHT PLACES
         Linearly interpolate between the tiles current position and the tile new position
         //tilesToDrop[i].Position = tilesToDrop[i].Position.LinearInterpolate(newTilePosition, .5f);
 
@@ -74,10 +76,11 @@ public void DropTile()
             boardTiles[(int)newTilePosition.x / 32, (int)newTilePosition.y / 32] = tilesToDrop[i];
             boardTiles[(int)newTilePosition.x / 32, (int)(newTilePosition.y - 32) / 32] = null;
         }
-        */
+        
 
         //Once the tile is in position the state is changed back to the check for voids state
         ChangeState(BoardState.CHECKVOIDS);
         GD.Print("BoardManager - DropTile: Done");
+        */
     }
 }

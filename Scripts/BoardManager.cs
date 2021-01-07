@@ -69,7 +69,7 @@ public class BoardManager : Node2D
                 fbei.FireEvent();
 
                 //Remove tile for testing
-                //RemoveTileAt(new Vector2(4, 4));
+                RemoveTileAt(new Vector2(4, 4));
 
                 //Remove tile for testing
                 //RemoveTileAt(new Vector2(8, 8));
