@@ -7,7 +7,6 @@ namespace EventCallback
     {
         //The name of the object that was tapped
         public ulong nodeID;
-        public Vector2 touchPosition;
-        public Vector2 dragedDirection;
+        public Vector2 dragStartPos, dragEndPos;
     }
 }
