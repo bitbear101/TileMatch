@@ -18,8 +18,10 @@ public class CheckEmptySlots : Node
         //Stores the empty tile positions
         List<Vector2> emptySlotPos = new List<Vector2>();
         List<Vector2> emptyTopRowSlotPos = new List<Vector2>();
-        //If any void tiles are found set it to true
+        //If any void tiles are found in the main body of the board
         bool emptySlots = false;
+        //If any void tiles are found in the top row of the board
+        bool emptyTopRowSlots = false;
         //Clear the empty tile lists
         emptySlotPos.Clear();
         emptyTopRowSlotPos.Clear();
@@ -64,7 +66,6 @@ public class CheckEmptySlots : Node
                     }
                     else
                     {
-                        GD.Print("BoardManager - CheckForEmptySlots: Empty top row slot detected");
                         //There is an empty spot in the board we set it to true
                         emptySlots = true;
                         //Add the top row empty slot to the empty top row list

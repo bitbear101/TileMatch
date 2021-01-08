@@ -12,7 +12,6 @@ public class InputManager : Node
     Vector2 touchStart;
     //Object touched
     ulong nodeID;
-
     public override void _Ready()
     {
         //Grab a reference to the ray node in teh scene
