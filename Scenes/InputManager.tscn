@@ -5,4 +5,4 @@
 [node name="InputManager" type="Node"]
 script = ExtResource( 1 )
 
-[node name="HitRay" type="RayCast2D" parent="."]
+[node name="TouchRay" type="RayCast2D" parent="."]

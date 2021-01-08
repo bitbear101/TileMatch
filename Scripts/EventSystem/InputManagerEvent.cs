@@ -3,7 +3,7 @@ using System;
 
 namespace EventCallback
 {
-    public class InputHandleEvent : Event<InputHandleEvent>
+    public class InputManagerEvent : Event<InputManagerEvent>
     {
         //The name of the object that was tapped
         public ulong nodeID;
