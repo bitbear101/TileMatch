@@ -8,7 +8,7 @@ public class CheckTileMatches : Node
     Node2D[,] board;
     //The reference to the size of the map
     Vector2 boardSize;
-
+    //
     List<Vector2> openList = new List<Vector2>();
     List<Vector2> closedList = new List<Vector2>();
 

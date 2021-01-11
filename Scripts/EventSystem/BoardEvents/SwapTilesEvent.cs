@@ -8,7 +8,6 @@ namespace EventCallback
         //The instance IS for the tile (uneque identefier for the object)
         public ulong tileID;
         //The start and end position of the drag
-        public Vector2 dragStartPos, dragEndPos;
-        
+        public Vector2 dragStartPos, dragEndPos;  
     }
 }

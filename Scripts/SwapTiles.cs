@@ -30,36 +30,35 @@ public class SwapTiles : Node
         //If the direction for the swipe is negative one then the swipe is invalid
         if (dir != Vector2.NegOne)
         {
-            GD.Print("SwapTile - OnSwapTileEvent: dir = " + dir);
             //Get the tile object in the world
             Node2D tile = (Node2D)GD.InstanceFromId(stei.tileID);
-            GD.Print("SwapTile - OnSwapTileEvent: tile.Position = " + tile.Name);
             //Get the tiles position in the board
             Vector2 tileBoardPos = tile.Position / 32;
-            GD.Print("SwapTile - OnSwapTileEvent: tileBoardPos = " + tileBoardPos);
             //The neighbouring tiles position in the board
             Vector2 neighbourBoardPos = tileBoardPos + dir;
             //Check if the new neighbours position is within the boards boundries
             if (!WithinBounds(neighbourBoardPos)) return;
-            GD.Print("SwapTile - OnSwapTileEvent: neighbourBoardPos = " + neighbourBoardPos);
             //The ttile object for the neighbouring tile
             Node2D neighbourTile = gbei.board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y];
-            GD.Print("SwapTile - OnSwapTileEvent: neighbourTile.Position = " + neighbourTile.Name);
 
             //A temporary storage for the tiles object in the worlds position
             Vector2 tempPos = tile.Position;
             //A temporary storage for the tile in the board
             Node2D tempTile = board[(int)tileBoardPos.x, (int)tileBoardPos.y];
-            
+
             //Set the tiles position to the neighbours position
             tile.Position = neighbourTile.Position;
             //Set the neighbouring tiles position to the tempPos that was set to the tile.Position
             neighbourTile.Position = tempPos;
-            
+
             //Set the tile in the board to the neighbouring tile
             board[(int)tileBoardPos.x, (int)tileBoardPos.y] = board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y];
             //Set the neighbouring tile to the original tile
             board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y] = tempTile;
+
+//Call the board state schange 
+            BoardStateChangeEvent bscei = new BoardStateChangeEvent();
+
         }
         else
         {
@@ -117,8 +116,7 @@ public class SwapTiles : Node
         if (board.GetLength(1) - 1 < pos.y) inBounds = false;
         //Id the new position less than 0, the first position of the array in the y positions
         if (0 > pos.y) inBounds = false;
-
-        GD.Print("SpawnTile - WithinBounds: inBounds = " + inBounds);
+        //Return the resul for the in bound check
         return inBounds;
     }
 }
