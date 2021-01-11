@@ -8,9 +8,15 @@ public class CheckTileMatches : Node
     Node2D[,] board;
     //The reference to the size of the map
     Vector2 boardSize;
-    //
+    //The list for tiles that still need to be checked
     List<Vector2> openList = new List<Vector2>();
+    //The list of tiles that have already been checked but are not a match
     List<Vector2> closedList = new List<Vector2>();
+    //The list of vertical matches
+    List<Vector2> vMatches = new List<Vector2>();
+    //The list of horizontal matches
+    List<Vector2> hMatches = new List<Vector2>();
+
 
     //The vertical and horizontal lists combined that will be sent for removal, I do it this way becuase there could be doubles 
     List<Vector2> tilesToRemove = new List<Vector2>();

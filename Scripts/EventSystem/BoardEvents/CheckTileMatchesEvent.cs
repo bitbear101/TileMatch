@@ -12,6 +12,8 @@ namespace EventCallback
         public Vector2 boardSize;
         //The position of the tile to check
         public Vector2 tilePos;
+        //If there are matching tiles we set this to true
+        public bool matchingTiles;
     }
 }
 
