@@ -13,15 +13,13 @@ public class MoveTile : Node
     //Stores the empty tile positions
     List<Vector2> emptySlotPos = new List<Vector2>();
     List<Vector2> emptyTopRowSlotPos = new List<Vector2>();
-    //The scene for the tile object
-    PackedScene tileScene;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         //Register the listener for the move tile event
         MoveTileEvent.RegisterListener(OnMoveTileEvent);
-        //Get the tile scene
-        tileScene = ResourceLoader.Load("res://Scenes/Tile.tscn") as PackedScene;
+
     }
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta)
@@ -39,7 +37,6 @@ public class MoveTile : Node
         board = mtei.board;
         boardSize = mtei.boardSize;
         emptySlotPos = mtei.emptySlotPos;
-        emptyTopRowSlotPos = mtei.emptyTopRowSlotPos;
     }
     public void MoveTiles()
     {
@@ -61,24 +58,7 @@ public class MoveTile : Node
                 }
             }
             active = false;
-        }
-
-        if (emptyTopRowSlotPos.Count > 0)
-        {
-            //Interate through the top row of the board and spawn new tiles in
-            for (int j = 0; j < emptyTopRowSlotPos.Count; j++)
-            {
-                //Instantiate the tilscene and set the boards node to the scene instanced
-                board[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y] = ((Node2D)tileScene.Instance());
-                //Set the position of the tile on the board representation in the viewport
-                board[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y].Position = new Vector2((int)emptyTopRowSlotPos[j].x * 32, (int)emptyTopRowSlotPos[j].y * 32);
-                //Add the tile as a child to the board scene
-                AddChild(board[(int)emptyTopRowSlotPos[j].x, (int)emptyTopRowSlotPos[j].y]);
-            }
-            active = false;
-        }
-        
-
+        }        
         /*
         1. Get the whole column of tiles above the empty tile
         2. Intereate through the column and move them doward

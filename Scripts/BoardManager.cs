@@ -50,6 +50,8 @@ public class BoardManager : Node2D
     {
         TileDestroyedEvent.RegisterListener(OnTileDestroyedEvent);
         BoardStateChangeEvent.RegisterListener(OnBoardStateChangeEvent);
+        //Register the swap tile event listener
+        GetBoardEvent.RegisterListener(OnGetBoardEvent);
         //Set the state of the board to fill it
         State = BoardState.FILL_BOARD;
     }
@@ -68,9 +70,9 @@ public class BoardManager : Node2D
                 //Send the event to the listeners
                 fbei.FireEvent();
                 //Afte the fill board state has benn run we switch to the wait state until usr iput changes the board status
-                State = BoardState.CHECK_MATCHES;
+                // State = BoardState.CHECK_MATCHES;
+                State = BoardState.WAIT;
                 break;
-
             case BoardState.CHECK_VOIDS:
                 GD.Print("BoardManager - _Process: Running State CHECKVOIDS");
                 //Send a message to the CheckEmptySlotsEvent
@@ -82,18 +84,14 @@ public class BoardManager : Node2D
                 //Send the event message
                 cesei.FireEvent();
                 break;
-
             case BoardState.CHECK_MATCHES:
-            CheckTileMatchesEvent ctmei = new CheckTileMatchesEvent();
-            ctmei.board = board;
+                CheckTileMatchesEvent ctmei = new CheckTileMatchesEvent();
+                ctmei.board = board;
+                ctmei.FireEvent();
                 break;
-
             case BoardState.WAIT:
                 GD.Print("BoardManager - _Process: Running State WAIT");
                 break;
-
-
-
             case BoardState.CLEAR_BOARD:
                 GD.Print("BoardManager - _Process: Running State CLEARBOARD");
                 //Clears the board of tiles
@@ -102,6 +100,12 @@ public class BoardManager : Node2D
                 State = BoardState.WAIT;
                 break;
         }
+    }
+    //
+    private void OnGetBoardEvent(GetBoardEvent gbei)
+    {
+        //Send the reference of the board ot the swap tile event
+        gbei.board = board;
     }
 
     //Return the tile at the requested position

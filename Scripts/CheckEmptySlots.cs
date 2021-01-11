@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using EventCallback;
 public class CheckEmptySlots : Node
-
 {
-
     //This method gets run the first time the class is instantiated
     public override void _Ready()
     {
@@ -67,9 +65,9 @@ public class CheckEmptySlots : Node
                     else
                     {
                         //There is an empty spot in the board we set it to true
-                        emptySlots = true;
+                        emptyTopRowSlots = true;
                         //Add the top row empty slot to the empty top row list
-                        emptyTopRowSlotPos.Add(new Vector2(x, y));
+                    emptyTopRowSlotPos.Add(new Vector2(x, y));
                     }
                 }
             }
@@ -88,10 +86,20 @@ public class CheckEmptySlots : Node
             mtei.boardSize = cesei.boardSize;
             //We pass in the list of empty slots to the move tile class
             mtei.emptySlotPos = emptySlotPos;
-            //We pass in the empty top row positions to the move tiles class
-            mtei.emptyTopRowSlotPos = emptyTopRowSlotPos;
             //We send the events message to all the listeners
             mtei.FireEvent();
+        }
+        //If the empty slots where top row tiles we need to create new tiles
+        else if(emptyTopRowSlots)
+        {
+            //Send a message to the create tile event
+            CreateTileEvent ctei = new CreateTileEvent();
+            //Send a reference of the board
+            ctei.board = cesei.board;
+            //Send a reference of empty top row slot positions 
+            ctei.emptyTopRowSlotPos = emptyTopRowSlotPos;
+            //Fire of the message
+            ctei.FireEvent();
         }
         else
         {
