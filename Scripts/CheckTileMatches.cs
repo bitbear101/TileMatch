@@ -78,6 +78,7 @@ public class CheckTileMatches : Node
                 {
                     //If the tile type is the same 
                     openList.Add(new Vector2(tilePos.x, y));
+                    vMatches.Add(new Vector2(tilePos.x, y));
                 }
             }
         }
@@ -93,6 +94,7 @@ public class CheckTileMatches : Node
                 {
                     //If the horizontal tiles are of the same type they are loaded into the open list to check thier neighbours as well
                     openList.Add(new Vector2(x, tilePos.y));
+                    hMatches.Add(new Vector2(x, tilePos.y));
                 }
             }
         }
