@@ -15,6 +15,7 @@ public class CreateTile : Node2D
     }
     private void OnCreateTileEvent(CreateTileEvent ctei)
     {
+        /*
         if (ctei.emptyTopRowSlotPos.Count > 0)
         {
             //Interate through the top row of the board and spawn new tiles in
@@ -34,5 +35,6 @@ public class CreateTile : Node2D
             bscei.FireEvent();
             GD.Print("BoardManager - MoveTile: Done");
         }
+        */
     }
 }

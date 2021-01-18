@@ -2,9 +2,9 @@ using Godot;
 using System;
 namespace EventCallback
 {
-    public class GetBoardEvent : Event<GetBoardEvent>
+    public class InitBoardEvent : Event<InitBoardEvent>
     {
-        //Get a reference to the board
+        //The board of tiles
         public Tile[,] board;
     }
 }

@@ -3,8 +3,9 @@ using System;
 using EventCallback;
 public class SwapTiles : Node
 {
+    /*
     //The refference to the board
-    Node2D[,] board;
+    Tile[,] board;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -39,7 +40,7 @@ public class SwapTiles : Node
             //Check if the new neighbours position is within the boards boundries
             if (!WithinBounds(neighbourBoardPos)) return;
             //The ttile object for the neighbouring tile
-            Node2D neighbourTile = gbei.board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y];
+            //Node2D neighbourTile = gbei.board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y];
 
             //A temporary storage for the tiles object in the worlds position
             Vector2 tempPos = tile.Position;
@@ -119,4 +120,5 @@ public class SwapTiles : Node
         //Return the resul for the in bound check
         return inBounds;
     }
+    */
 }

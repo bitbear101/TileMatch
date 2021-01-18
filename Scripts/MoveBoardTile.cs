@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using EventCallback;
-public class MoveTile : Node2D
+public class MoveBoardTile : Node
 {
     //If the state is active
     bool active = false;

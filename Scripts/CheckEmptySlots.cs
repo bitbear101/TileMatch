@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using EventCallback;
 public class CheckEmptySlots : Node
-{
+{/*
     //This method gets run the first time the class is instantiated
     public override void _Ready()
     {
@@ -113,4 +113,5 @@ public class CheckEmptySlots : Node
         }
         GD.Print("BoardManager - CheckForEmptySlots: Done");
     }
+    */
 }
