@@ -5,7 +5,10 @@ using EventCallback;
 
 public class InitTile : Node2D
 {
+    //The sprite node for the tile
     Sprite sprite;
+    //The size of the tiles - grab this from the tile 
+    int tileSize = 32;
     //A dictionary for the sprites for the tiles
     Dictionary<TileType, PackedScene> tileSprites = new Dictionary<TileType, PackedScene>();
     // Called when the node enters the scene tree for the first time.
@@ -27,7 +30,8 @@ public class InitTile : Node2D
 
     private void OnTileTypeChangeEvent(TileTypeChangeEvent ttcei)
     {
-        if(ttcei.pos != Position / 32) return;
+        GD.Print("InitTile - OnTileTypeChangeEvent: Called");
+        if(ttcei.pos != Position / tileSize) return;
         //If the type for the tile is in the dictionary
         if (tileSprites.ContainsKey(ttcei.type))
         {

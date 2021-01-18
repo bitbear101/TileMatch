@@ -33,6 +33,7 @@ public class Tile
         get { return type; }
         set
         {
+            GD.Print("Tile - Type: Called");
             //If the new type is the same as the old we don't change the value or call the tile type change event
             if(type == value) return;
             //When a new state is set we call the tile state change event to notify the listeners 

@@ -9,7 +9,7 @@
 [ext_resource path="res://Scripts/RemoveTiles.cs" type="Script" id=7]
 [ext_resource path="res://Scripts/SwapTiles.cs" type="Script" id=8]
 [ext_resource path="res://Scripts/CreateTile.cs" type="Script" id=9]
-[ext_resource path="res://Scripts/NodesBoard.cs" type="Script" id=10]
+[ext_resource path="res://Scripts/VisualBoard.cs" type="Script" id=10]
 [ext_resource path="res://Scripts/Board.cs" type="Script" id=11]
 
 [node name="BoardStateManager" type="Node2D"]
@@ -42,5 +42,5 @@ script = ExtResource( 8 )
 [node name="CreateTile" type="Node2D" parent="."]
 script = ExtResource( 9 )
 
-[node name="NodesBoard" type="Node2D" parent="."]
+[node name="VisualBoard" type="Node2D" parent="."]
 script = ExtResource( 10 )

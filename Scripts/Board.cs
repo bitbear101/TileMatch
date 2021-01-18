@@ -22,10 +22,4 @@ public class Board : Node
         //Return a refference of the board to the requester
         gbei.board = board;
     }
-
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
 }

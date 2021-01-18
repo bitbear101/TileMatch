@@ -16,6 +16,10 @@ public class InitBoard : Node
     private void OnInitBoardEvent(InitBoardEvent ibei)
     {
         GD.Print("InitBoard - OnInitBoardEvent: Running");
+        //Create the visual tile nodes before we create the tile board
+        InitVisualBoardEvent ivbei = new InitVisualBoardEvent();
+        ivbei.board = ibei.board;
+        ivbei.FireEvent();
 
         //Set up the random number generator
         RandomNumberGenerator rng = new RandomNumberGenerator();
