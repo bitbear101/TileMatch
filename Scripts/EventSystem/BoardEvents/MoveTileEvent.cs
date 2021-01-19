@@ -9,7 +9,5 @@ namespace EventCallback
         public bool active;
         //Stores the empty tile positions
         public List<Vector2> emptySlotPos = new List<Vector2>();
-
     }
-
 }
