@@ -3,7 +3,7 @@ using System;
 using EventCallback;
 public class SwapTiles : Node
 {
-    /*
+    
     //The refference to the board
     Tile[,] board;
     // Called when the node enters the scene tree for the first time.
@@ -120,5 +120,5 @@ public class SwapTiles : Node
         //Return the resul for the in bound check
         return inBounds;
     }
-    */
+    
 }
