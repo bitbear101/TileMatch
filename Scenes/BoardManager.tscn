@@ -5,7 +5,7 @@
 [ext_resource path="res://Scripts/CheckEmptySlots.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/CheckTileMatches.cs" type="Script" id=4]
 [ext_resource path="res://Scripts/ClearBoard.cs" type="Script" id=5]
-[ext_resource path="res://Scripts/MoveBoardTile.cs" type="Script" id=6]
+[ext_resource path="res://Scripts/MoveTile.cs" type="Script" id=6]
 [ext_resource path="res://Scripts/RemoveTiles.cs" type="Script" id=7]
 [ext_resource path="res://Scripts/SwapTiles.cs" type="Script" id=8]
 [ext_resource path="res://Scripts/CreateTile.cs" type="Script" id=9]
@@ -30,7 +30,7 @@ script = ExtResource( 4 )
 [node name="ClearBoard" type="Node" parent="."]
 script = ExtResource( 5 )
 
-[node name="MoveBoardTile" type="Node" parent="."]
+[node name="MoveTile" type="Node" parent="."]
 script = ExtResource( 6 )
 
 [node name="RemoveTiles" type="Node" parent="."]
@@ -39,7 +39,7 @@ script = ExtResource( 7 )
 [node name="SwapTiles" type="Node" parent="."]
 script = ExtResource( 8 )
 
-[node name="CreateTile" type="Node2D" parent="."]
+[node name="CreateTile" type="Node" parent="."]
 script = ExtResource( 9 )
 
 [node name="VisualBoard" type="Node2D" parent="."]

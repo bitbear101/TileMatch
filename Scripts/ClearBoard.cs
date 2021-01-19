@@ -11,15 +11,18 @@ public class ClearBoard : Node
     }
     private void OnClearBoardEvent(ClearBoardEvent cbei)
     {
-        //Loop through the entire board
-        for (int x = 0; x < cbei.boardSize.x; x++)
+        GetBoardEvent gbei = new GetBoardEvent();
+        gbei.FireEvent();
+        //Loop through the entire board        
+        for (int y = 0; y < gbei.board.GetLength(1); y++)
         {
-            for (int y = 0; y < cbei.boardSize.x; y++)
+            for (int x = 0; x < gbei.board.GetLength(0); x++)
             {
-                //Delete the tile object
-                cbei.board[x, y].QueueFree();
-                //Set the position in the list for the tile to null
-                cbei.board[x, y] = null;
+                //Change all the tiles on the boards type to NONE be sending the set tile type message
+                SetTileTypeEvent sttei = new SetTileTypeEvent();
+                sttei.type = TileType.NONE;
+                sttei.pos = new Vector2(x, y);
+                sttei.FireEvent();
             }
         }
     }

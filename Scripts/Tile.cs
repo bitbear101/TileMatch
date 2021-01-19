@@ -5,6 +5,7 @@ using EventCallback;
 //The types of tiles
 public enum TileType
 {
+    NONE,
     RED,
     BLUE,
     GREEN,
@@ -15,43 +16,45 @@ public enum TileType
 };
 public class Tile
 {
-    //The constructor for the tile
-    public Tile(TileType _type, Vector2 _pos)
-    {
-        //Set the type of the tile
-        Type = _type;
-        //Set the position of the tile in the array
-        pos = _pos;
-    }
     //The position of the tile in the board
     Vector2 pos;
     //The state of the tile
     TileType type;
+    //Set up the constructor for the Tile Class
+    public Tile(Vector2 _pos)
+    {
+        //Set the tile position 
+        pos = _pos;
+        //Register the listener for the Set TIle Event
+        SetTileTypeEvent.RegisterListener(OnSetTileTypeEvent);
+    }
     //A custom setter and getter for the state to send a message to all listeners when it is changed
     public TileType Type
     {
         get { return type; }
         set
         {
-            GD.Print("Tile - Type: Called");
             //If the new type is the same as the old we don't change the value or call the tile type change event
-            if(type == value) return;
+            if (type == value) return;
+            //Set the new value of state
+            type = value;
             //When a new state is set we call the tile state change event to notify the listeners 
-            TileTypeChangeEvent ttcei = new TileTypeChangeEvent();
+            TileTypeChangedEvent ttcei = new TileTypeChangedEvent();
             //Set the value for the new state to send as a message
-            ttcei.type = value;
-            //Send the tiles position along the message as well
+            ttcei.type = type;
+            //Send the tiles position along the message as well    
             ttcei.pos = pos;
             //Fire of the event
             ttcei.FireEvent();
-            //Set the new value of state
-            type = value;
+
         }
     }
     //Change the type of the tile
-    public void ChangeState(TileType _type)
+    private void OnSetTileTypeEvent(SetTileTypeEvent sttei)
     {
+        //If of the tile is not the same as the request for the tile type changes position we exit out of the method
+        if (sttei.pos != pos) return;
         //Set the state to the new state
-        Type = _type;
+        Type = sttei.type;
     }
 }

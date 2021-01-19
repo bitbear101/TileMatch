@@ -3,36 +3,51 @@ using System;
 using EventCallback;
 public class InitBoard : Node
 {
-    //The scene for the tile object
-    PackedScene tileScene;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        //Get the tile scene
-        tileScene = ResourceLoader.Load("res://Scenes/Tile.tscn") as PackedScene;
+
         //Register the fill board messanger event
         InitBoardEvent.RegisterListener(OnInitBoardEvent);
     }
+
     private void OnInitBoardEvent(InitBoardEvent ibei)
     {
         GD.Print("InitBoard - OnInitBoardEvent: Running");
+
+        GetBoardEvent gbei = new GetBoardEvent();
+        //Fire the event to get the board
+        gbei.FireEvent();
+        //Create the empty tiles for te board to populate the array
+        for (int y = 0; y < gbei.board.GetLength(1); y++)
+        {
+            for (int x = 0; x < gbei.board.GetLength(0); x++)
+            {
+                //Create a new tile in the board
+                gbei.board[x, y] = new Tile(new Vector2(x, y));
+            }
+        }
         //Create the visual tile nodes before we create the tile board
         InitVisualBoardEvent ivbei = new InitVisualBoardEvent();
-        ivbei.board = ibei.board;
         ivbei.FireEvent();
+        //Fill the tile array of the board
+        FillTileBoard(gbei.board);
 
+        GD.Print("InitBoard - OnInitBoardEvent: Done");
+    }
+
+    private void FillTileBoard(Tile[,] board)
+    {
         //Set up the random number generator
         RandomNumberGenerator rng = new RandomNumberGenerator();
         //Randomize the random number generators seed
         rng.Randomize();
 
-        GetBoardEvent gbei = new GetBoardEvent();
-        //Fire the event to get the board
-        gbei.FireEvent();
         //Loop through the board
-        for (int y = 0; y < gbei.board.GetLength(1); y++)
+        for (int y = 0; y < board.GetLength(1); y++)
         {
-            for (int x = 0; x < gbei.board.GetLength(0); x++)
+            for (int x = 0; x < board.GetLength(0); x++)
             {
                 //The temp tile type the check
                 TileType tempType;
@@ -40,14 +55,17 @@ public class InitBoard : Node
                 do
                 {
                     //Generate a tile based on the mount of entries in the enum, so the enum size can change as log as custom numbering is not used
-                    tempType = (TileType)rng.RandiRange(0, Enum.GetNames(typeof(TileType)).Length - 1);
-                } while (CheckMatches(gbei.board, x, y, tempType));
-                //Instantiate the tilscene and set the boards node 
-                gbei.board[x, y] = new Tile(tempType, new Vector2(x, y));
+                    tempType = (TileType)rng.RandiRange(1, Enum.GetNames(typeof(TileType)).Length - 1);
+                } while (CheckMatches(board, x, y, tempType));
+                //Change the tile type to its new type
+                SetTileTypeEvent sttei = new SetTileTypeEvent();
+                sttei.pos = new Vector2(x, y);
+                sttei.type = tempType;
+                sttei.FireEvent();
             }
         }
-        GD.Print("InitBoard - OnInitBoardEvent: Done");
     }
+
     //Check if there are matches to the top and left of the injected position
     private bool CheckMatches(Tile[,] board, int tilePosX, int tilePosY, TileType type)
     {

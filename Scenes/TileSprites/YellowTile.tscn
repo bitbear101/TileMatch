@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Sprites/match3_sheet.png" type="Texture" id=1]
 
-[node name="RedTile" type="Sprite"]
+[node name="YellowTile" type="Sprite"]
 texture = ExtResource( 1 )
 region_enabled = true
 region_rect = Rect2( 4, 4, 32, 32 )

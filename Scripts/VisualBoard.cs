@@ -17,14 +17,18 @@ public class VisualBoard : Node2D
     {
         //Get the tile scene
         tileScene = ResourceLoader.Load("res://Scenes/Tile.tscn") as PackedScene;
-        //Register as a listener for the create tile event
-        CreateTileEvent.RegisterListener(OnCreateTileEvent);
+        //Register the InitVisualBoardEvent listener in this class
+        InitVisualBoardEvent.RegisterListener(OnInitVisualBoardEvent);
     }
     //Create the tile objects
     private void OnInitVisualBoardEvent(InitVisualBoardEvent ivbei)
     {
+        GD.Print("ViualBoard - OnInitVisualBoardEvent: Called");
+        //Send a message requesting the tile board to get its size later
+        GetBoardEvent gbei = new GetBoardEvent();
+        gbei.FireEvent();
         //Set up the array for the node board tiles
-        nodeBoardTiles = new Node2D[ivbei.board.GetLength(0), ivbei.board.GetLength(1)];
+        nodeBoardTiles = new Node2D[gbei.board.GetLength(0), gbei.board.GetLength(1)];
 
         for (int y = 0; y < nodeBoardTiles.GetLength(1); y++)
         {
@@ -36,14 +40,9 @@ public class VisualBoard : Node2D
                 nodeBoardTiles[x, y].Position = new Vector2(x * tileSize, y * tileSize);
                 //Add the Node2D object ot hte scene as a child
                 AddChild(nodeBoardTiles[x, y]);
+                //GD.Print("VisualBoard - InitBoard: nodeBoardTiles[x, y] ID = " + nodeBoardTiles[x, y].GetInstanceId());
             }
         }
-    }
-
-    //Creates the tile
-    private void OnCreateTileEvent(CreateTileEvent ctei)
-    {
-
     }
     //Updates the tiles visuals
     private void OnUpdateTileEvent()

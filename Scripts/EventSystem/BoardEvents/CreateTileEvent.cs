@@ -1,13 +1,11 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 namespace EventCallback
 {
     public class CreateTileEvent : Event<CreateTileEvent>
     {
-        //The type of tile to create
-        public TileType type;
-        //The position of creation for he tile class in the board
+        //The position of the tile to be created
         public Vector2 pos;
     }
+
 }

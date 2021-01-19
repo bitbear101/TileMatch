@@ -3,7 +3,7 @@ using System;
 
 namespace EventCallback
 {
-    public class TileTypeChangeEvent : Event<TileTypeChangeEvent>
+    public class SetTileTypeEvent : Event<SetTileTypeEvent>
     {
         //The position of the tile used as an identifier
         public Vector2 pos;

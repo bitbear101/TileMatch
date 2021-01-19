@@ -11,8 +11,9 @@ public class Board : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        //Called when a tile is destroyed
-        //TileDestroyedEvent.RegisterListener(OnTileDestroyedEvent);
+        //Register the listener for hte get tile type event
+        GetTileTypeEvent.RegisterListener(OnGetTileTypeEvent);
+
         //Register the swap tile event listener
         GetBoardEvent.RegisterListener(OnGetBoardEvent);
     }
@@ -21,5 +22,10 @@ public class Board : Node
     {
         //Return a refference of the board to the requester
         gbei.board = board;
+    }
+    private void OnGetTileTypeEvent(GetTileTypeEvent gttei)
+    {
+        //Get the tile type at the position of the tile
+        gttei.type = board[(int)gttei.pos.x, (int)gttei.pos.y].Type;
     }
 }
