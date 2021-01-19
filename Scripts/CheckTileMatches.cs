@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EventCallback;
 public class CheckTileMatches : Node
 {
+    /*
     //The reference to the main board 
     Node2D[,] board;
     //The reference to the size of the map
@@ -106,4 +107,5 @@ public class CheckTileMatches : Node
         //Remove the tile from the list
         openList.RemoveAt(listPos);
     }
+    */
 }

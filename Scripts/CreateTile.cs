@@ -24,7 +24,7 @@ public class CreateTile : Node
         TileType tempType = (TileType)rng.RandiRange(1, Enum.GetNames(typeof(TileType)).Length - 1);
         //Change the tile type to its new type
         SetTileTypeEvent sttei = new SetTileTypeEvent();
-        sttei.pos = new Vector2(x, y);
+        sttei.pos = new Vector2(ctei.pos.x, ctei.pos.y);
         sttei.type = tempType;
         sttei.FireEvent();
     }
