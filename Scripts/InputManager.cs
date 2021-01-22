@@ -63,8 +63,6 @@ public class InputManager : Node
                 //If the tile has been touched and the touch is released we can send the message for touch event
                 if (tileTouched)
                 {
-                    //Get the instance id of the tile
-                    stei.tileID = nodeID;
                     //Set the start position of the drag
                     stei.dragStartPos = touchStart;
                     //Set the start position of the drag

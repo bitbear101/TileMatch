@@ -19,9 +19,14 @@ public class MoveTile : Node2D
     public void OnMoveTileEvent(MoveTileEvent mtei)
     {
         GD.Print("BoardManager - MoveTile: Running");
-        //Get the tile class board array
-        GetBoardEvent gbei = new GetBoardEvent();
-        gbei.FireEvent();
+        //Call the event message to get the boards size
+        GetBoardSizeEvent gbsei = new GetBoardSizeEvent();
+        gbsei.FireEvent();
+
+        //Send a message to the event callback to get the tile type
+        GetTileTypeEvent gttei = new GetTileTypeEvent();
+        //Send a message to the event callback for the set tile type event
+        SetTileTypeEvent sttei = new SetTileTypeEvent();
 
         //The empty slots array to interate through
         emptySlotPos = mtei.emptySlotPos;
@@ -31,13 +36,22 @@ public class MoveTile : Node2D
             //Loop through all the empty slot positions
             for (int i = 0; i < emptySlotPos.Count; i++)
             {
-                //Loop through the whole column of slots from the bottom at the empty slot to the top of the board
+                //Loop through the whole column of slots from the bottom starting at the empty slot to the top of the board
                 for (int y = (int)emptySlotPos[i].y; y > 0; y--)
                 {
-                    //Set the empty slot to the slot aboves tile
-                    gbei.board[(int)emptySlotPos[i].x, y].Type = gbei.board[(int)emptySlotPos[i].x, y - 1].Type;
-                    //Set the tiles it just copieds slot to null
-                    gbei.board[(int)emptySlotPos[i].x, y - 1].Type = TileType.NONE;
+                    //Get the tile from the get tile event callback to get the tile type above the empty slot
+                    gttei.pos = new Vector2(emptySlotPos[i].x, (y - 1));
+                    gttei.FireEvent();
+
+                    //Call the set tile event callback message to set the empty slot to the tile type above its value
+                    sttei.pos = new Vector2(emptySlotPos[i].x, y);
+                    sttei.type = gttei.type;
+                    sttei.FireEvent();
+
+                    //Call the set tile event callback message to clear the tile aboves value
+                    sttei.pos = new Vector2(emptySlotPos[i].x, y - 1);
+                    sttei.type = TileType.NONE;
+                    sttei.FireEvent();
                 }
             }
         }

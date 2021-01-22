@@ -3,9 +3,6 @@ using System;
 using EventCallback;
 public class SwapTiles : Node
 {
-    
-    //The refference to the board
-    Tile[,] board;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -15,12 +12,15 @@ public class SwapTiles : Node
 
     private void OnSwapTileEvent(SwapTilesEvent stei)
     {
-        //Get the reference to the board
-        GetBoardEvent gbei = new GetBoardEvent();
+        //Get the size to the board using the event messaging system
+        GetBoardSizeEvent gbsei = new GetBoardSizeEvent();
         //Fire the message that returns the board
-        gbei.FireEvent();
-        //Set the board to the board retrieved by the event callback
-        board = gbei.board;
+        gbsei.FireEvent();
+        //The Event callback messaging to get the tile type from the injected position
+        GetTileTypeEvent gttei = new GetTileTypeEvent();
+        //Send the event message to get hte tiles sixe in pixels
+        GetTileSizeEvent gtsei = new GetTileSizeEvent();
+        gtsei.FireEvent();
 
         GD.Print("SwapTiles - OnSwapTileEvent: Running");
         //The direction for the drag
@@ -34,7 +34,7 @@ public class SwapTiles : Node
             //Get the tile object in the world
             Node2D tile = (Node2D)GD.InstanceFromId(stei.tileID);
             //Get the tiles position in the board
-            Vector2 tileBoardPos = tile.Position / 32;
+            Vector2 tileBoardPos = tile.Position / gtsei.size;
             //The neighbouring tiles position in the board
             Vector2 neighbourBoardPos = tileBoardPos + dir;
             //Check if the new neighbours position is within the boards boundries
@@ -45,8 +45,9 @@ public class SwapTiles : Node
             //A temporary storage for the tiles object in the worlds position
             Vector2 tempPos = tile.Position;
             //A temporary storage for the tile in the board
-            Node2D tempTile = board[(int)tileBoardPos.x, (int)tileBoardPos.y];
-
+            //Node2D tempTile = board[(int)tileBoardPos.x, (int)tileBoardPos.y];
+            gttei.pos = new Vector2()
+TileType tempTileType =
             //Set the tiles position to the neighbours position
             tile.Position = neighbourTile.Position;
             //Set the neighbouring tiles position to the tempPos that was set to the tile.Position

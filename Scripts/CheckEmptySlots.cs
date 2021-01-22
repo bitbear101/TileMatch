@@ -15,13 +15,11 @@ public class CheckEmptySlots : Node
     public void OnCheckEmptySlotsEvent(CheckEmptySlotsEvent cesei)
     {
         GD.Print("BoardManager - CheckForEmptySlots: Running");
-        //Get the reference to the tile class board
-        GetBoardEvent gbei = new GetBoardEvent();
-        gbei.FireEvent();
+        //Get the boards size in tiles not pixels
+        GetBoardSizeEvent gbsei = new GetBoardSizeEvent();
+        gbsei.FireEvent();
         //Get the tile type
         GetTileTypeEvent gttei = new GetTileTypeEvent();
-
-
         //Stores the empty tile positions
         List<Vector2> emptySlotPos = new List<Vector2>();
         List<Vector2> emptyTopRowSlotPos = new List<Vector2>();
@@ -35,13 +33,15 @@ public class CheckEmptySlots : Node
         //Find open position and call tile move function on the tile above it
 
         //Loop through the board from bottom to top to add the bottom most empty slots into the array first so they drop first 
-        for (int y = (int)gbei.board.GetLength(1) - 1; y > -1; y--)
+        for (int y = gbsei.boardSizeY - 1; y > -1; y--)
         {
             //Loop through the board
-            for (int x = 0; x < (int)gbei.board.GetLength(0); x++)
+            for (int x = 0; x < gbsei.boardSizeX; x++)
             {
+                gttei.pos = new Vector2(x, y);
+                gttei.FireEvent();
                 //If the slot on the board is empty
-                if (gbei.board[x, y].Type == TileType.NONE)
+                if (gttei.type == TileType.NONE)
                 {
                     //If the empty slot is not in thte top row
                     if (y != 0)

@@ -24,11 +24,11 @@ public class VisualBoard : Node2D
     private void OnInitVisualBoardEvent(InitVisualBoardEvent ivbei)
     {
         GD.Print("ViualBoard - OnInitVisualBoardEvent: Called");
-        //Send a message requesting the tile board to get its size later
-        GetBoardEvent gbei = new GetBoardEvent();
-        gbei.FireEvent();
+        //Fire od the message event to get the size of the board
+        GetBoardSizeEvent gbsei = new GetBoardSizeEvent();
+        gbsei.FireEvent();
         //Set up the array for the node board tiles
-        nodeBoardTiles = new Node2D[gbei.board.GetLength(0), gbei.board.GetLength(1)];
+        nodeBoardTiles = new Node2D[gbsei.boardSizeX, gbsei.boardSizeY];
 
         for (int y = 0; y < nodeBoardTiles.GetLength(1); y++)
         {
@@ -48,5 +48,11 @@ public class VisualBoard : Node2D
     private void OnUpdateTileEvent()
     {
 
+    }
+
+    private void OnGetTileSizeEvent(GetTileSizeEvent gtsei) 
+    {
+        //Return the tile size to the message sender
+        gtsei.size = tileSize;
     }
 }

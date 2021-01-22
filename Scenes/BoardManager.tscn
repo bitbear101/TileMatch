@@ -18,6 +18,9 @@ script = ExtResource( 1 )
 [node name="Board" type="Node" parent="."]
 script = ExtResource( 11 )
 
+[node name="VisualBoard" type="Node2D" parent="."]
+script = ExtResource( 10 )
+
 [node name="CheckEmptySlots" type="Node" parent="."]
 script = ExtResource( 3 )
 
@@ -41,6 +44,3 @@ script = ExtResource( 8 )
 
 [node name="CreateTile" type="Node" parent="."]
 script = ExtResource( 9 )
-
-[node name="VisualBoard" type="Node2D" parent="."]
-script = ExtResource( 10 )

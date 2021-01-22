@@ -11,12 +11,13 @@ public class ClearBoard : Node
     }
     private void OnClearBoardEvent(ClearBoardEvent cbei)
     {
-        GetBoardEvent gbei = new GetBoardEvent();
-        gbei.FireEvent();
+        //Get the boards size in tiles not pixels
+        GetBoardSizeEvent gbsei = new GetBoardSizeEvent();
+        gbsei.FireEvent();
         //Loop through the entire board        
-        for (int y = 0; y < gbei.board.GetLength(1); y++)
+        for (int y = 0; y < gbsei.boardSizeY; y++)
         {
-            for (int x = 0; x < gbei.board.GetLength(0); x++)
+            for (int x = 0; x < gbsei.boardSizeX; x++)
             {
                 //Change all the tiles on the boards type to NONE be sending the set tile type message
                 SetTileTypeEvent sttei = new SetTileTypeEvent();
