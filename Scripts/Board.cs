@@ -13,6 +13,8 @@ public class Board : Node
     {
         //Register the listener for hte get tile type event
         GetTileTypeEvent.RegisterListener(OnGetTileTypeEvent);
+        //The listener for the get boards size
+        GetBoardSizeEvent.RegisterListener(OnGetBoardSizeEvent);
         //Initialize the tile board with empty tiles
         CreateBoard();
     }

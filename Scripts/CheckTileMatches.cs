@@ -18,7 +18,6 @@ public class CheckTileMatches : Node
     //The list of horizontal matches
     List<Vector2> hMatches = new List<Vector2>();
 
-
     //The vertical and horizontal lists combined that will be sent for removal, I do it this way becuase there could be doubles 
     List<Vector2> tilesToRemove = new List<Vector2>();
     // Called when the node enters the scene tree for the first time.

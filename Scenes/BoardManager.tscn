@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scripts/BoardStateManager.cs" type="Script" id=1]
-[ext_resource path="res://Scripts/InitBoard.cs" type="Script" id=2]
+[ext_resource path="res://Scripts/InitBoardData.cs" type="Script" id=2]
 [ext_resource path="res://Scripts/CheckEmptySlots.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/CheckTileMatches.cs" type="Script" id=4]
 [ext_resource path="res://Scripts/ClearBoard.cs" type="Script" id=5]
@@ -9,8 +9,10 @@
 [ext_resource path="res://Scripts/RemoveTiles.cs" type="Script" id=7]
 [ext_resource path="res://Scripts/SwapTiles.cs" type="Script" id=8]
 [ext_resource path="res://Scripts/CreateTile.cs" type="Script" id=9]
-[ext_resource path="res://Scripts/VisualBoard.cs" type="Script" id=10]
+[ext_resource path="res://Scripts/InitBoardTiles.cs" type="Script" id=10]
 [ext_resource path="res://Scripts/Board.cs" type="Script" id=11]
+
+
 
 [node name="BoardStateManager" type="Node2D"]
 script = ExtResource( 1 )

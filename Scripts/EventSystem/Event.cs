@@ -10,7 +10,7 @@ namespace EventCallback
          * might have some generic text
          * for doing Debug.Log?
          */
-        public string Description;
+        public string EventName;
         private bool hasFired;
         public delegate void EventListener(T info);
         private static event EventListener listeners;
@@ -27,7 +27,7 @@ namespace EventCallback
         {
             if (hasFired)
             {
-                throw new Exception("This event has already fired, to prevent infinite loops you can't refire an event");
+                throw new Exception("The " + EventName + " has already fired, to prevent infinite loops you can't refire an event");
             }
             hasFired = true;
             if (listeners != null)

@@ -34,7 +34,7 @@ public class InitTile : Node2D
             //Add the tile to the dictionary for quick access using the tile types
             tileSprites.Add(tileSprite.Key, sprite);
             //Hide the sprites on creation
-            sprite.Visible = false;
+            //sprite.Visible = false;
             //Ad the node ot the scene as a cchile of this scripts owner
             AddChild(sprite);
         }

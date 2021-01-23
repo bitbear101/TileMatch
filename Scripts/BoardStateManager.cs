@@ -16,7 +16,7 @@ Order of process:
 
 public enum BoardState
 {
-    FILL_BOARD,
+    INIT_BOARD,
     CLEAR_BOARD,
     CHECK_MATCHES,
     CHECK_VOIDS,
@@ -45,18 +45,23 @@ public class BoardStateManager : Node2D
         //When the boards state is changed from another class
         BoardStateChangeEvent.RegisterListener(OnBoardStateChangeEvent);
         //Set the state of the board to fill it
-        State = BoardState.FILL_BOARD;
+        State = BoardState.INIT_BOARD;
     }
     private void NewState()
     {
         switch (state)
         {
-            case BoardState.FILL_BOARD:
+            case BoardState.INIT_BOARD:
                 GD.Print("BoardManager - _Process: Running State FILLBOARD");
                 //Send a message to the FillBoardEvent
-                InitBoardEvent ibei = new InitBoardEvent();
+                InitBoardTilesEvent ibtei = new InitBoardTilesEvent();
                 //Send the event to the listeners
-                ibei.FireEvent();
+                ibtei.FireEvent();
+                //Send a message to the FillBoardEvent
+                InitBoardDataEvent ibdei = new InitBoardDataEvent();
+                //Send the event to the listeners
+                ibdei.FireEvent();
+
                 //Afte the fill board state has benn run we switch to the wait state until usr iput changes the board status
                 //State = BoardState.CHECK_MATCHES;
                 State = BoardState.WAIT;

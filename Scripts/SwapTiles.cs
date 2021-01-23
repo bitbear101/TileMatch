@@ -3,6 +3,7 @@ using System;
 using EventCallback;
 public class SwapTiles : Node
 {
+    int boardWidth, boardHeight;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -16,8 +17,12 @@ public class SwapTiles : Node
         GetBoardSizeEvent gbsei = new GetBoardSizeEvent();
         //Fire the message that returns the board
         gbsei.FireEvent();
+        boardWidth = gbsei.boardSizeX;
+        boardHeight = gbsei.boardSizeY;
         //The Event callback messaging to get the tile type from the injected position
         GetTileTypeEvent gttei = new GetTileTypeEvent();
+        //The set tile type event callback 
+        SetTileTypeEvent sttei = new SetTileTypeEvent();
         //Send the event message to get hte tiles sixe in pixels
         GetTileSizeEvent gtsei = new GetTileSizeEvent();
         gtsei.FireEvent();
@@ -31,36 +36,50 @@ public class SwapTiles : Node
         //If the direction for the swipe is negative one then the swipe is invalid
         if (dir != Vector2.NegOne)
         {
-            //Get the tile object in the world
-            Node2D tile = (Node2D)GD.InstanceFromId(stei.tileID);
             //Get the tiles position in the board
-            Vector2 tileBoardPos = tile.Position / gtsei.size;
+            Vector2 originTilePos = stei.dragStartPos / gtsei.size;
             //The neighbouring tiles position in the board
-            Vector2 neighbourBoardPos = tileBoardPos + dir;
+            Vector2 neighbourTilePos = originTilePos + dir;
             //Check if the new neighbours position is within the boards boundries
-            if (!WithinBounds(neighbourBoardPos)) return;
+            if (!WithinBounds(neighbourTilePos)) return;
             //The ttile object for the neighbouring tile
             //Node2D neighbourTile = gbei.board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y];
 
-            //A temporary storage for the tiles object in the worlds position
-            Vector2 tempPos = tile.Position;
-            //A temporary storage for the tile in the board
-            //Node2D tempTile = board[(int)tileBoardPos.x, (int)tileBoardPos.y];
-            gttei.pos = new Vector2()
-TileType tempTileType =
-            //Set the tiles position to the neighbours position
-            tile.Position = neighbourTile.Position;
-            //Set the neighbouring tiles position to the tempPos that was set to the tile.Position
-            neighbourTile.Position = tempPos;
+            //Get the tile type for the origin tile from the event callback system
+            gttei.pos = originTilePos;
+            gttei.FireEvent();
+            //A temporary storage for the tile type of the origin tile
+            TileType originTileType = gttei.type;
+            //Get the neighbouring tile type
+            gttei.pos = neighbourTilePos;
+            gttei.FireEvent();
+            TileType neighbourTileType = gttei.type;
+            //Set the neighbour to the original tile type
+            sttei.pos = neighbourTilePos;
+            sttei.type = originTileType;
+            sttei.FireEvent();
+            //Set the origin tile type to the neighnours
+            sttei.pos = originTilePos;
+            sttei.type = neighbourTileType;
+            sttei.FireEvent();
 
-            //Set the tile in the board to the neighbouring tile
-            board[(int)tileBoardPos.x, (int)tileBoardPos.y] = board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y];
-            //Set the neighbouring tile to the original tile
-            board[(int)neighbourBoardPos.x, (int)neighbourBoardPos.y] = tempTile;
+            //TO DO: If the new tile positions have matche we keep the change and if not we reverse the tiles
+            bool matched = true;
 
-//Call the board state schange 
-            BoardStateChangeEvent bscei = new BoardStateChangeEvent();
+            if (!matched)
+            {
+                //Set the neighbour to the original tile type
+                sttei.pos = neighbourTilePos;
+                sttei.type = neighbourTileType;
+                sttei.FireEvent();
+                //Set the origin tile type to the neighnours
+                sttei.pos = originTilePos;
+                sttei.type = originTileType;
+                sttei.FireEvent();
+            }
 
+            //Call the board state schange 
+            //BoardStateChangeEvent bscei = new BoardStateChangeEvent();
         }
         else
         {
@@ -111,15 +130,14 @@ TileType tempTileType =
         bool inBounds = true;
         //Check if the position being passed is within the bounds of the board array
         //If the new position larger than the last entry in the array on the x positions
-        if (board.GetLength(0) - 1 < pos.x) inBounds = false;
+        if (boardWidth < pos.x) inBounds = false;
         //Id the new position less than 0, the first position of the array in the x positions
         if (0 > pos.x) inBounds = false;
         //If the new position larger than the last entry in the array in the y positions
-        if (board.GetLength(1) - 1 < pos.y) inBounds = false;
+        if (boardHeight < pos.y) inBounds = false;
         //Id the new position less than 0, the first position of the array in the y positions
         if (0 > pos.y) inBounds = false;
         //Return the resul for the in bound check
         return inBounds;
     }
-    
 }

@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using EventCallback;
-public class MoveTile : Node2D
+public class MoveTile : Node
 {
     //Stores the empty tile positions
     List<Vector2> emptySlotPos = new List<Vector2>();
