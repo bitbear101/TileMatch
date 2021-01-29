@@ -46,7 +46,6 @@ public class Tile
             ttcei.pos = pos;
             //Fire of the event
             ttcei.FireEvent();
-
         }
     }
     //Change the type of the tile

@@ -20,6 +20,8 @@ public class InitBoardTiles : Node2D
         tileScene = ResourceLoader.Load("res://Scenes/Tile.tscn") as PackedScene;
         //Initialize the objects tiles for the board
         InitBoardTilesEvent.RegisterListener(OnInitBoardTilesEvent);
+        //Register the get tile size as listener
+        GetTileSizeEvent.RegisterListener(OnGetTileSizeEvent);
     }
     //Create the tile objects
     private void OnInitBoardTilesEvent(InitBoardTilesEvent ibtei)
@@ -44,11 +46,6 @@ public class InitBoardTiles : Node2D
                 //GD.Print("VisualBoard - InitBoard: nodeBoardTiles[x, y] ID = " + nodeBoardTiles[x, y].GetInstanceId());
             }
         }
-    }
-    //Updates the tiles visuals
-    private void OnUpdateTileEvent()
-    {
-
     }
 
     private void OnGetTileSizeEvent(GetTileSizeEvent gtsei)

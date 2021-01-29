@@ -35,6 +35,7 @@ public class Board : Node
     //Returns the type of the tile requested
     private void OnGetTileTypeEvent(GetTileTypeEvent gttei)
     {
+        GD.Print("Board - OnGetTileTypeEvent: gttei.pos.x, gttei.pos.y = " + gttei.pos.x + ", " + gttei.pos.y);
         //Get the tile type at the position of the tile
         gttei.type = board[(int)gttei.pos.x, (int)gttei.pos.y].Type;
     }

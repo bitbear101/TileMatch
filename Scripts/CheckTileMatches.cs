@@ -4,15 +4,6 @@ using System.Collections.Generic;
 using EventCallback;
 public class CheckTileMatches : Node
 {
-    /*
-    //The reference to the main board 
-    Node2D[,] board;
-    //The reference to the size of the map
-    Vector2 boardSize;
-    //The list for tiles that still need to be checked
-    List<Vector2> openList = new List<Vector2>();
-    //The list of tiles that have already been checked but are not a match
-    List<Vector2> closedList = new List<Vector2>();
     //The list of vertical matches
     List<Vector2> vMatches = new List<Vector2>();
     //The list of horizontal matches
@@ -29,82 +20,116 @@ public class CheckTileMatches : Node
     //Check for matching neighbouring tiles
     private void OnCheckTileMatchesEvent(CheckTileMatchesEvent ctmei)
     {
-        //Set the board reference to the current board
-        board = ctmei.board;
-        //Set the size of the board
-        boardSize = ctmei.boardSize;
-        //Add the first tile to the open list
-        openList.Add(ctmei.tilePos);
-        //Loop through the list until the open list is empty
-        while (openList.Count > 0)
-        {
-            CheckTiles(ctmei.tilePos);
-        }
-    }
-    private Node2D GetTile(Vector2 pos)
-    {
-        //Return the tile node at the requested position
-        return board[(int)pos.x, (int)pos.y];
-    }
-    private TileType GetTileType(Node2D tile)
-    {
-        //Send a message to request the tiles type
+        GD.Print("CheckTileMatches - OnCheckTileMatchesEvent: Running");
+        //Add the first tile to the open lists for the horizontal and vertical
+        vMatches.Add(ctmei.tilePos);
+        hMatches.Add(ctmei.tilePos);
+        //The original tiles type
+        //Register the event callback
         GetTileTypeEvent gttei = new GetTileTypeEvent();
-        gttei.id = tile.GetInstanceId();
+        //The postion of the original tiles type
+        gttei.pos = ctmei.tilePos;
         gttei.FireEvent();
-        return gttei.type;
-    }
-    private void MatchBoard()
-    {
-        //Run through all the  tiles on the board
-        for (int y = 0; y < boardSize.y; y++)
-        {
-            for (int x = 0; x < boardSize.x; x++)
-            {
+        //Set the original tiles type
+        TileType originTileType = gttei.type;
+        //Check the horizontal tiles 
+        CheckHTiles(originTileType, ctmei.tilePos);
+        CheckVTiles(originTileType, ctmei.tilePos);
 
-            }
+        if (vMatches.Count > 2)
+        {
+            ctmei.matches = true;
         }
+        else if (hMatches.Count > 2)
+        {
+            ctmei.matches = true;
+        }
+
     }
-    private void CheckTiles(Vector2 tilePos)
+
+    private void CheckHTiles(TileType origin, Vector2 tilePos)
     {
-        //Check all the y position tiles 
-        for (int y = (int)tilePos.y - 1; y < (int)tilePos.y + 1; y++)
+        //Register the event callback
+        GetTileTypeEvent gttei = new GetTileTypeEvent();
+        //The postion of the original tiles shifted one position to the left
+        gttei.pos = tilePos + new Vector2(-1, 0);
+        gttei.FireEvent();
+
+        //Check the vertical 
+        if (gttei.type == origin)
         {
-            //If the tile we are checking is not the same tile that was injected and if the tile is not in the closed list 
-            if (tilePos.y != y && !closedList.Contains(new Vector2(tilePos.x, y)) && !openList.Contains(new Vector2(tilePos.x, y)))
+            //Register the event callback
+            GetTileTypeEvent gtteiHM = new GetTileTypeEvent();
+            hMatches.Add((tilePos + new Vector2(-1, 0)));
+            //The postion of the original tiles shifted one position to the left
+            gtteiHM.pos = tilePos + new Vector2(-2, 0);
+            gtteiHM.FireEvent();
+            //Check the vertical 
+            if (gtteiHM.type == origin)
             {
-                //if the tile types of the input tile and the tile we are checking are the same
-                if (GetTileType(GetTile(tilePos)) == (GetTileType(GetTile(new Vector2(tilePos.x, y)))))
-                {
-                    //If the tile type is the same 
-                    openList.Add(new Vector2(tilePos.x, y));
-                    vMatches.Add(new Vector2(tilePos.x, y));
-                }
+                hMatches.Add((tilePos + new Vector2(-2, 0)));
             }
         }
-        //Checking tile matches seperately on the x and then the y axis makes sure we only check
-        //for vertical and horizontal matches only
-        for (int x = (int)tilePos.x - 1; x < (int)tilePos.x + 1; x++)
+        GetTileTypeEvent gtteitp = new GetTileTypeEvent();
+        //The postion of the original tiles shifted one position to the left
+        gtteitp.pos = tilePos + new Vector2(1, 0);
+        gtteitp.FireEvent();
+
+        //Check the vertical 
+        if (gtteitp.type == origin)
         {
-            //Make sure the tile is not checking against itself by making sure the position is not the same
-            if (tilePos.x != x && !closedList.Contains(new Vector2(x, tilePos.y)) && !openList.Contains(new Vector2(x, tilePos.y)))
+            GetTileTypeEvent gtteintp = new GetTileTypeEvent();
+            hMatches.Add((tilePos + new Vector2(1, 0)));
+            //The postion of the original tiles shifted one position to the left
+            gtteintp.pos = tilePos + new Vector2(2, 0);
+            gtteintp.FireEvent();
+            //Check the vertical 
+            if (gtteintp.type == origin)
             {
-                //Get the script on the node object and then grab the tile types from that for a comparison
-                if (GetTileType(GetTile(tilePos)) == (GetTileType(GetTile(new Vector2(x, tilePos.y)))))
-                {
-                    //If the horizontal tiles are of the same type they are loaded into the open list to check thier neighbours as well
-                    openList.Add(new Vector2(x, tilePos.y));
-                    hMatches.Add(new Vector2(x, tilePos.y));
-                }
+                hMatches.Add((tilePos + new Vector2(2, 0)));
             }
         }
-        //If the closed list does not contain the tile being checked yet then add it to the list 
-        if (!closedList.Contains(tilePos)) closedList.Add(tilePos);
-        //Remove the checked tile from the open list
-        //Get the index position in the list of the tile we want to remove from the list
-        int listPos = openList.FindIndex(Vector2 => Vector2 == tilePos);
-        //Remove the tile from the list
-        openList.RemoveAt(listPos);
     }
-    */
+    private void CheckVTiles(TileType origin, Vector2 tilePos)
+    {
+        //Register the event callback
+        GetTileTypeEvent gttei = new GetTileTypeEvent();
+        //The postion of the original tiles shifted one position to the left
+        gttei.pos = tilePos + new Vector2(0, -1);
+        gttei.FireEvent();
+
+        //Check the vertical 
+        if (gttei.type == origin)
+        {
+            GetTileTypeEvent gtteiVM = new GetTileTypeEvent();
+            vMatches.Add((tilePos + new Vector2(0, -1)));
+            //The postion of the original tiles shifted one position to the left
+            gtteiVM.pos = tilePos + new Vector2(0, -2);
+            gtteiVM.FireEvent();
+            //Check the vertical 
+            if (gtteiVM.type == origin)
+            {
+                vMatches.Add((tilePos + new Vector2(0, -2)));
+            }
+        }
+        GetTileTypeEvent gtteitp = new GetTileTypeEvent();
+        //The postion of the original tiles shifted one position to the left
+        gtteitp.pos = tilePos + new Vector2(0, 1);
+        gtteitp.FireEvent();
+
+        //Check the vertical 
+        if (gtteitp.type == origin)
+        {
+            GetTileTypeEvent gtteintp = new GetTileTypeEvent();
+            vMatches.Add((tilePos + new Vector2(0, 1)));
+            //The postion of the original tiles shifted one position to the left
+            gtteintp.pos = tilePos + new Vector2(0, 2);
+            gtteintp.FireEvent();
+            //Check the vertical 
+            if (gtteintp.type == origin)
+            {
+                vMatches.Add((tilePos + new Vector2(0, 2)));
+            }
+        }
+    }
 }
