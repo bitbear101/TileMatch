@@ -22,10 +22,8 @@ public class SwapTiles : Node
         boardWidth = gbsei.boardSizeX;
         boardHeight = gbsei.boardSizeY;
         GD.Print("SwapTiles - OnSwapTileEvent: Running");
-
         GD.Print("SwapTiles - OnSwapTileEvent: boardWidth = " + boardWidth);
         GD.Print("SwapTiles - OnSwapTileEvent: boardHeight = " + boardHeight);
-
 
         //The Event callback messaging to get the tile type from the injected position
         GetTileTypeEvent gttei = new GetTileTypeEvent();
